@@ -288,7 +288,13 @@ const resolvers = {
             } catch (err) {
                 throw new Error(err.message);
             }
-        }
+        },
+    },
+
+    Release: {
+        releasedOn(release: Release): string {
+            return moment(release.releasedOn).format("YYYY-MM-DD");
+        },
     },
 };
 

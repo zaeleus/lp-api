@@ -3,7 +3,7 @@ import { Model } from "objection";
 class Release extends Model {
     public static tableName = "releases";
 
-    public get releasedOn(): string {
+    public get releasedOn(): Date {
         return this.released_on;
     }
 
@@ -13,7 +13,7 @@ class Release extends Model {
 
     // tslint:disable:variable-name
     public id: number;
-    public released_on: string;
+    public released_on: Date;
     public country?: string;
     public catalog_number?: string;
     public disambiguation?: string;
