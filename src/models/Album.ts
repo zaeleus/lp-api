@@ -1,6 +1,7 @@
 import { Model } from "objection";
 
 import AlbumName from "./AlbumName";
+import Release from "./Release";
 
 enum AlbumKind {
     Single,
@@ -20,12 +21,21 @@ class Album extends Model {
             modelClass: `${__dirname}/AlbumName`,
             relation: Model.HasManyRelation,
         },
+        releases: {
+            join: {
+                from: "albums.id",
+                to: "releases.album_id",
+            },
+            modelClass: `${__dirname}/Release`,
+            relation: Model.HasManyRelation,
+        },
     };
 
     public id: number;
     public kind: AlbumKind;
 
     public names?: AlbumName[];
+    public releases?: Release[];
 }
 
 export default Album;

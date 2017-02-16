@@ -8,6 +8,7 @@ import ArtistCreditName from "./models/ArtistCreditName";
 import ArtistName from "./models/ArtistName";
 import ArtistUrl from "./models/ArtistUrl";
 import Membership from "./models/Membership";
+import Release from "./models/Release";
 
 const typeDefs = `
     enum AlbumKind {
@@ -20,6 +21,8 @@ const typeDefs = `
         id: ID!
         kind: AlbumKind!
         names: [AlbumName!]!
+        releases: [Release!]!
+        defaultRelease: Release!
     }
 
     type AlbumName {
@@ -82,6 +85,14 @@ const typeDefs = `
         artistCredit: ArtistCredit!
     }
 
+    type Release {
+        id: ID!
+        releasedOn: String!
+        country: String
+        catalogNumber: String
+        disambiguation: String
+    }
+
     type Query {
         artist(id: ID!): Artist
         artists(query: String!): [Artist!]!
@@ -104,6 +115,29 @@ const resolvers = {
             try {
                 const a = await album.$loadRelated("names");
                 return a.names || [];
+            } catch (err) {
+                throw new Error(err.message);
+            }
+        },
+
+        async releases(album: Album): Promise<Release[]> {
+            try {
+                const a = await album.$loadRelated("releases");
+                return a.releases || [];
+            } catch (err) {
+                throw new Error(err.message);
+            }
+        },
+
+        async defaultRelease(album: Album): Promise<Release> {
+            try {
+                const a = await album.$loadRelated("releases");
+
+                if (!a.releases) {
+                    throw new Error("missing default release");
+                }
+
+                return a.releases[0];
             } catch (err) {
                 throw new Error(err.message);
             }
