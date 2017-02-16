@@ -1,4 +1,5 @@
 import { makeExecutableSchema } from "graphql-tools";
+import * as moment from "moment";
 
 import Album from "./models/Album";
 import AlbumName from "./models/AlbumName";
@@ -94,6 +95,7 @@ const typeDefs = `
     }
 
     type Query {
+        albumsByReleaseMonth(date: String!): [Album!]!
         artist(id: ID!): Artist
         artists(query: String!): [Artist!]!
         artistsByStartMonth(month: Int!): [Artist!]!
@@ -248,6 +250,21 @@ const resolvers = {
     },
 
     Query: {
+        async albumsByReleaseMonth(root: any, { date }: { date: string }): Promise<Album[]> {
+            const parsedDate = moment(date, "YYYY-MM");
+            const start = parsedDate.startOf("month").format("YYYY-MM-DD");
+            const end = parsedDate.endOf("month").format("YYYY-MM-DD");
+
+            try {
+                return await Album.query()
+                    .select("albums.*")
+                    .innerJoin("releases", "albums.id", "releases.album_id")
+                    .whereBetween("releases.released_on", [start, end]);
+            } catch (err) {
+                throw new Error(err.message);
+            }
+        },
+
         async artist(root: any, { id }: { id: string }): Promise<Artist | null> {
             try {
                 const artist = await Artist.query().findById(id);
