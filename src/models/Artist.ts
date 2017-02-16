@@ -1,5 +1,6 @@
 import { Model } from "objection";
 
+import Album from "./Album";
 import ArtistName from "./ArtistName";
 import ArtistUrl from "./ArtistUrl";
 import Membership from "./Membership";
@@ -46,6 +47,15 @@ class Artist extends Model {
             .where("artist_names.name", "ILIKE", `%${query}%`)
             .groupBy("artists.id");
     };
+
+    public albums(): Promise<Album[]> {
+        return Album.query()
+            .select("albums.*")
+            .innerJoin("artist_credits", "albums.artist_credit_id", "artist_credits.id")
+            .innerJoin("artist_credit_names", "artist_credits.id", "artist_credit_names.artist_credit_id")
+            .where("artist_credit_names.artist_id", this.id)
+            .groupBy("albums.id");
+    }
 
     // tslint:disable:variable-name
     public id: number;

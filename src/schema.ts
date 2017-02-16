@@ -1,5 +1,7 @@
 import { makeExecutableSchema } from "graphql-tools";
 
+import Album from "./models/Album";
+import AlbumName from "./models/AlbumName";
 import Artist from "./models/Artist";
 import ArtistCredit from "./models/ArtistCredit";
 import ArtistCreditName from "./models/ArtistCreditName";
@@ -8,6 +10,26 @@ import ArtistUrl from "./models/ArtistUrl";
 import Membership from "./models/Membership";
 
 const typeDefs = `
+    enum AlbumKind {
+        SINGLE,
+        EP,
+        LP,
+    }
+
+    type Album {
+        id: ID!
+        kind: AlbumKind!
+        names: [AlbumName!]!
+    }
+
+    type AlbumName {
+        id: ID!
+        name: String!
+        locale: String!
+        isDefault: Boolean!
+        isOriginal: Boolean!
+    }
+
     enum ArtistKind {
         PERSON
         GROUP
@@ -18,6 +40,7 @@ const typeDefs = `
         kind: ArtistKind!
         country: String!
         disambiguation: String
+        albums: [Album!]!
         names: [ArtistName!]!
         urls: [ArtistUrl!]!
         memberships: [Membership!]!
@@ -67,7 +90,36 @@ const typeDefs = `
 `;
 
 const resolvers = {
+    Album: {
+        kind(album: Album): string {
+            switch (album.kind) {
+                case 0: return "SINGLE";
+                case 1: return "EP";
+                case 2: return "LP";
+                default: throw new Error("invalid album kind");
+            }
+        },
+
+        async names(album: Album): Promise<AlbumName[]> {
+            try {
+                const a = await album.$loadRelated("names");
+                return a.names || [];
+            } catch (err) {
+                throw new Error(err.message);
+            }
+        },
+    },
+
     Artist: {
+        async albums(artist: Artist): Promise<Album[]> {
+            try {
+                const albums = await artist.albums();
+                return albums || [];
+            } catch (err) {
+                throw new Error(err.message);
+            }
+        },
+
         kind(artist: Artist): string {
             switch (artist.kind) {
                 case 0: return "PERSON";
