@@ -107,6 +107,7 @@ const typeDefs = `
         artist(id: ID!): Artist
         artists(query: String!): [Artist!]!
         artistsByStartMonth(month: Int!): [Artist!]!
+        release(id: ID!): Release
     }
 `;
 
@@ -293,6 +294,15 @@ const resolvers = {
         async artistsByStartMonth(root: any, { month }: { month: number }): Promise<Artist[]> {
             try {
                 return await Artist.query().where("started_on_month", "=", month);
+            } catch (err) {
+                throw new Error(err.message);
+            }
+        },
+
+        async release(root: any, { id }: { id: string }): Promise<Release | null> {
+            try {
+                const release = await Release.query().findById(id);
+                return release || null;
             } catch (err) {
                 throw new Error(err.message);
             }
