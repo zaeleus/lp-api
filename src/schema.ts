@@ -10,6 +10,7 @@ import ArtistName from "./models/ArtistName";
 import ArtistUrl from "./models/ArtistUrl";
 import Membership from "./models/Membership";
 import Release from "./models/Release";
+import ReleaseUrl from "./models/ReleaseUrl";
 
 const typeDefs = `
     enum AlbumKind {
@@ -92,6 +93,13 @@ const typeDefs = `
         country: String
         catalogNumber: String
         disambiguation: String
+        urls: [ReleaseUrl!]!
+    }
+
+    type ReleaseUrl {
+        id: ID!
+        url: String!
+        name: String!
     }
 
     type Query {
@@ -294,6 +302,15 @@ const resolvers = {
     Release: {
         releasedOn(release: Release): string {
             return moment(release.releasedOn).format("YYYY-MM-DD");
+        },
+
+        async urls(release: Release): Promise<ReleaseUrl[]> {
+            try {
+                const r = await release.$loadRelated("urls");
+                return r.urls || [];
+            } catch (err) {
+                throw new Error(err.message);
+            }
         },
     },
 };
