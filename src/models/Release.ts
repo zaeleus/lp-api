@@ -1,11 +1,20 @@
 import { Model } from "objection";
 
+import Album from "./Album";
 import ReleaseUrl from "./ReleaseUrl";
 
 class Release extends Model {
     public static tableName = "releases";
 
     public static relationMappings = {
+        album: {
+            join: {
+                from: "releases.album_id",
+                to: "albums.id",
+            },
+            modelClass: `${__dirname}/Album`,
+            relation: Model.BelongsToOneRelation,
+        },
         urls: {
             join: {
                 from: "releases.id",
@@ -31,6 +40,8 @@ class Release extends Model {
     public catalog_number?: string;
     public disambiguation?: string;
     // tslint:enable:variable-name
+
+    public album?: Album;
 
     public urls?: ReleaseUrl[];
 }

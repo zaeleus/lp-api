@@ -1,6 +1,7 @@
 import { Model } from "objection";
 
 import AlbumName from "./AlbumName";
+import ArtistCredit from "./ArtistCredit";
 import Release from "./Release";
 
 enum AlbumKind {
@@ -13,6 +14,14 @@ class Album extends Model {
     public static tableName = "albums";
 
     public static relationMappings = {
+        artistCredit: {
+            join: {
+                from: "albums.artist_credit_id",
+                to: "artist_credits.id",
+            },
+            modelClass: `${__dirname}/ArtistCredit`,
+            relation: Model.BelongsToOneRelation,
+        },
         names: {
             join: {
                 from: "albums.id",
@@ -33,6 +42,8 @@ class Album extends Model {
 
     public id: number;
     public kind: AlbumKind;
+
+    public artistCredit?: ArtistCredit;
 
     public names?: AlbumName[];
     public releases?: Release[];

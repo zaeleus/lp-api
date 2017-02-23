@@ -22,6 +22,7 @@ const typeDefs = `
     type Album {
         id: ID!
         kind: AlbumKind!
+        artistCredit: ArtistCredit!
         names: [AlbumName!]!
         releases: [Release!]!
         defaultRelease: Release!
@@ -93,6 +94,7 @@ const typeDefs = `
         country: String
         catalogNumber: String
         disambiguation: String
+        album: Album!
         urls: [ReleaseUrl!]!
     }
 
@@ -113,6 +115,20 @@ const typeDefs = `
 
 const resolvers = {
     Album: {
+        async artistCredit(album: Album): Promise<ArtistCredit> {
+            try {
+                const a = await album.$loadRelated("artistCredit");
+
+                if (!a.artistCredit) {
+                    throw new Error("failed to load album.artistCredit");
+                }
+
+                return a.artistCredit;
+            } catch (err) {
+                throw new Error(err.message);
+            }
+        },
+
         kind(album: Album): string {
             switch (album.kind) {
                 case 0: return "SINGLE";
@@ -310,6 +326,20 @@ const resolvers = {
     },
 
     Release: {
+        async album(release: Release): Promise<Album> {
+            try {
+                const r = await release.$loadRelated("album");
+
+                if (!r.album) {
+                    throw new Error("failed to load release.album");
+                }
+
+                return r.album;
+            } catch (err) {
+                throw new Error(err.message);
+            }
+        },
+
         releasedOn(release: Release): string {
             return moment(release.releasedOn).format("YYYY-MM-DD");
         },
