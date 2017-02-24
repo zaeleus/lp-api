@@ -8,6 +8,7 @@ import ArtistCredit from "./models/ArtistCredit";
 import ArtistCreditName from "./models/ArtistCreditName";
 import ArtistName from "./models/ArtistName";
 import ArtistUrl from "./models/ArtistUrl";
+import Medium from "./models/Medium";
 import Membership from "./models/Membership";
 import Release from "./models/Release";
 import ReleaseUrl from "./models/ReleaseUrl";
@@ -82,6 +83,21 @@ const typeDefs = `
         name: String!
     }
 
+    enum MediumKind {
+        CD
+        DVD
+        BLU_RAY
+        DIGITAL
+        VINYL
+    }
+
+    type Medium {
+        id: ID!
+        kind: MediumKind!
+        position: Int!
+        name: String
+    }
+
     type Membership {
         id: ID!
         group: Artist!
@@ -95,6 +111,7 @@ const typeDefs = `
         catalogNumber: String
         disambiguation: String
         album: Album!
+        media: [Medium!]!
         urls: [ReleaseUrl!]!
     }
 
@@ -244,6 +261,19 @@ const resolvers = {
         },
     },
 
+    Medium: {
+        kind(medium: Medium): string {
+            switch (medium.kind) {
+                case 0: return "CD";
+                case 1: return "DVD";
+                case 2: return "BLU_RAY";
+                case 3: return "DIGITAL";
+                case 4: return "VINYL";
+                default: throw new Error("invalid medium kind");
+            }
+        },
+    },
+
     Membership: {
         async artistCredit(membership: Membership): Promise<ArtistCredit> {
             try {
@@ -336,6 +366,15 @@ const resolvers = {
                 }
 
                 return r.album;
+            } catch (err) {
+                throw new Error(err.message);
+            }
+        },
+
+        async media(release: Release): Promise<Medium[]> {
+            try {
+                const r = await release.$loadRelated("media");
+                return r.media || [];
             } catch (err) {
                 throw new Error(err.message);
             }

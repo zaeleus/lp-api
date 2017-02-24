@@ -1,6 +1,7 @@
 import { Model } from "objection";
 
 import Album from "./Album";
+import Medium from "./Medium";
 import ReleaseUrl from "./ReleaseUrl";
 
 class Release extends Model {
@@ -14,6 +15,14 @@ class Release extends Model {
             },
             modelClass: `${__dirname}/Album`,
             relation: Model.BelongsToOneRelation,
+        },
+        media: {
+            join: {
+                from: "releases.id",
+                to: "media.release_id",
+            },
+            modelClass: `${__dirname}/Medium`,
+            relation: Model.HasManyRelation,
         },
         urls: {
             join: {
@@ -44,6 +53,7 @@ class Release extends Model {
     public album?: Album;
 
     public urls?: ReleaseUrl[];
+    public media?: Medium[];
 }
 
 export default Release;
