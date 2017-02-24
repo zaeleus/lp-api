@@ -16,6 +16,8 @@ import ReleaseUrl from "./models/ReleaseUrl";
 import Song from "./models/Song";
 import SongName from "./models/SongName";
 import SongUrl from "./models/SongUrl";
+import Track from "./models/Track";
+import TrackName from "./models/TrackName";
 
 const typeDefs = `
     enum AlbumKind {
@@ -113,6 +115,7 @@ const typeDefs = `
         kind: MediumKind!
         position: Int!
         name: String
+        tracks: [Track!]!
     }
 
     type Membership {
@@ -158,6 +161,23 @@ const typeDefs = `
         id: ID!
         url: String!
         name: String!
+    }
+
+    type Track {
+        id: ID!
+        position: Int!
+        duration: Int
+        artistCredit: ArtistCredit!
+        song: Song!
+        names: [TrackName!]!
+    }
+
+    type TrackName {
+        id: ID!
+        name: String!
+        locale: String!
+        isDefault: Boolean!
+        isOriginal: Boolean!
     }
 
     type Query {
@@ -350,6 +370,15 @@ const resolvers = {
                 default: throw new Error("invalid medium kind");
             }
         },
+
+        async tracks(medium: Medium): Promise<Track[]> {
+            try {
+                const m = await medium.$loadRelated("tracks");
+                return m.tracks || [];
+            } catch (err) {
+                throw new Error(err.message);
+            }
+        },
     },
 
     Membership: {
@@ -419,6 +448,45 @@ const resolvers = {
             try {
                 const s = await song.$loadRelated("urls");
                 return s.urls || [];
+            } catch (err) {
+                throw new Error(err.message);
+            }
+        },
+    },
+
+    Track: {
+        async artistCredit(track: Track): Promise<ArtistCredit> {
+            try {
+                const t = await track.$loadRelated("artistCredit");
+
+                if (!t.artistCredit) {
+                    throw new Error("failed to load track.artistCredit");
+                }
+
+                return t.artistCredit;
+            } catch (err) {
+                throw new Error(err.message);
+            }
+        },
+
+        async names(track: Track): Promise<TrackName[]> {
+            try {
+                const t = await track.$loadRelated("names");
+                return t.names || [];
+            } catch (err) {
+                throw new Error(err.message);
+            }
+        },
+
+        async song(track: Track): Promise<Song> {
+            try {
+                const t = await track.$loadRelated("song");
+
+                if (!t.song) {
+                    throw new Error("failed to load track.song");
+                }
+
+                return t.song;
             } catch (err) {
                 throw new Error(err.message);
             }
