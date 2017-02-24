@@ -284,7 +284,8 @@ const resolvers = {
                 return await Album.query()
                     .select("albums.*")
                     .innerJoin("releases", "albums.id", "releases.album_id")
-                    .whereBetween("releases.released_on", [start, end]);
+                    .whereBetween("releases.released_on", [start, end])
+                    .orderBy("releases.released_on");
             } catch (err) {
                 throw new Error(err.message);
             }
