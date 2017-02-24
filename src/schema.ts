@@ -12,6 +12,9 @@ import Medium from "./models/Medium";
 import Membership from "./models/Membership";
 import Release from "./models/Release";
 import ReleaseUrl from "./models/ReleaseUrl";
+import Song from "./models/Song";
+import SongName from "./models/SongName";
+import SongUrl from "./models/SongUrl";
 
 const typeDefs = `
     enum AlbumKind {
@@ -116,6 +119,27 @@ const typeDefs = `
     }
 
     type ReleaseUrl {
+        id: ID!
+        url: String!
+        name: String!
+    }
+
+    type Song {
+        id: ID!
+        artistCredit: ArtistCredit!
+        names: [SongName!]!
+        urls: [SongUrl!]!
+    }
+
+    type SongName {
+        id: ID!
+        name: String!
+        locale: String!
+        isDefault: Boolean!
+        isOriginal: Boolean!
+    }
+
+    type SongUrl {
         id: ID!
         url: String!
         name: String!
@@ -298,6 +322,40 @@ const resolvers = {
                 }
 
                 return m.group;
+            } catch (err) {
+                throw new Error(err.message);
+            }
+        },
+    },
+
+    Song: {
+        async artistCredit(song: Song): Promise<ArtistCredit> {
+            try {
+                const s = await song.$loadRelated("artistCredit");
+
+                if (!s.artistCredit) {
+                    throw new Error("failed to load song.artistCredit");
+                }
+
+                return s.artistCredit;
+            } catch (err) {
+                throw new Error(err.message);
+            }
+        },
+
+        async names(song: Song): Promise<SongName[]> {
+            try {
+                const s = await song.$loadRelated("names");
+                return s.names || [];
+            } catch (err) {
+                throw new Error(err.message);
+            }
+        },
+
+        async urls(song: Song): Promise<SongUrl[]> {
+            try {
+                const s = await song.$loadRelated("urls");
+                return s.urls || [];
             } catch (err) {
                 throw new Error(err.message);
             }
