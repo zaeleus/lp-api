@@ -1,6 +1,7 @@
 import { Model } from "objection";
 
 import ArtistCredit from "./ArtistCredit";
+import Contribution from "./Contribution";
 import SongName from "./SongName";
 import SongUrl from "./SongUrl";
 
@@ -15,6 +16,14 @@ class Song extends Model {
             },
             modelClass: `${__dirname}/ArtistCredit`,
             relation: Model.BelongsToOneRelation,
+        },
+        contributions: {
+            join: {
+                from: "songs.id",
+                to: "contributions.song_id",
+            },
+            modelClass: `${__dirname}/Contribution`,
+            relation: Model.HasManyRelation,
         },
         names: {
             join: {
@@ -41,6 +50,7 @@ class Song extends Model {
 
     public artistCredit?: ArtistCredit;
 
+    public contributions?: Contribution[];
     public names?: SongName[];
     public urls?: SongUrl[];
 }
