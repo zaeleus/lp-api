@@ -36,7 +36,10 @@ export const resolvers = {
 
         async media(release: Release): Promise<Medium[]> {
             try {
-                const r = await release.$loadRelated("media");
+                const r = await release.$loadRelated("media(orderByPosition)", {
+                    orderByPosition: (builder) => builder.orderBy("media.position"),
+                });
+
                 return r.media || [];
             } catch (err) {
                 throw new Error(err.message);
