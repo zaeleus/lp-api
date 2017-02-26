@@ -9,7 +9,7 @@ export const typeDefs = `
         albumsByReleaseMonth(date: String!): [Album!]!
         artist(id: ID!): Artist
         artists(query: String!): [Artist!]!
-        artistsByStartMonth(month: Int!): [Artist!]!
+        artistsByStartMonth(date: String!): [Artist!]!
         release(id: ID!): Release
     }
 `;
@@ -49,7 +49,12 @@ export const resolvers = {
             }
         },
 
-        async artistsByStartMonth(root: any, { month }: { month: number }): Promise<Artist[]> {
+        async artistsByStartMonth(root: any, { date }: { date: string }): Promise<Artist[]> {
+            const parsedDate = moment(date, "YYYY-MM");
+
+            // moment.month() is zero-based.
+            const month = parsedDate.month() + 1;
+
             try {
                 return await Artist.query().where("started_on_month", "=", month);
             } catch (err) {
