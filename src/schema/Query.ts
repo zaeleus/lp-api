@@ -10,6 +10,7 @@ export const typeDefs = `
         artist(id: ID!): Artist
         artists(query: String!): [Artist!]!
         artistsByStartMonth(date: String!): [Artist!]!
+        recentAlbums: [Album!]!
         release(id: ID!): Release
     }
 `;
@@ -57,6 +58,19 @@ export const resolvers = {
 
             try {
                 return await Artist.query().where("started_on_month", "=", month);
+            } catch (err) {
+                throw new Error(err.message);
+            }
+        },
+
+        async recentAlbums(): Promise<Album[]> {
+            try {
+                return await Album.query()
+                    .select("albums.*")
+                    .innerJoin("releases", "albums.id", "releases.album_id")
+                    .orderBy("releases.released_on", "desc")
+                    .groupBy("albums.id", "releases.released_on")
+                    .limit(10);
             } catch (err) {
                 throw new Error(err.message);
             }
