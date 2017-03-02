@@ -5,7 +5,7 @@ import ArtistName from "./ArtistName";
 import ArtistUrl from "./ArtistUrl";
 import Membership from "./Membership";
 
-enum ArtistKind {
+export enum ArtistKind {
     Person,
     Group,
 }

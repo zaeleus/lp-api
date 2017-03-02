@@ -1,7 +1,7 @@
 import * as moment from "moment";
 
 import Album from "../models/Album";
-import Artist from "../models/Artist";
+import Artist, { ArtistKind } from "../models/Artist";
 import Release from "../models/Release";
 
 export const typeDefs = `
@@ -57,7 +57,9 @@ export const resolvers = {
             const month = parsedDate.month() + 1;
 
             try {
-                return await Artist.query().where("started_on_month", "=", month);
+                return await Artist.query()
+                    .where("started_on_month", "=", month)
+                    .where("kind", "=", ArtistKind.Person);
             } catch (err) {
                 throw new Error(err.message);
             }
