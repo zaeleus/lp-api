@@ -15,6 +15,8 @@ export const typeDefs = `
         kind: ArtistKind!
         country: String!
         disambiguation: String
+        startedOn: String
+        endedOn: String
         albums: [Album!]!
         names: [ArtistName!]!
         urls: [ArtistUrl!]!
@@ -31,6 +33,12 @@ export const resolvers = {
             } catch (err) {
                 throw new Error(err.message);
             }
+        },
+
+        endedOn(artist: Artist): string | null {
+            const pieces = [artist.ended_on_year, artist.ended_on_month, artist.ended_on_day];
+            const date = pieces.filter((p) => p).join("-");
+            return (date !== "") ? date : null;
         },
 
         kind(artist: Artist): string {
@@ -57,6 +65,12 @@ export const resolvers = {
             } catch (err) {
                 throw new Error(err.message);
             }
+        },
+
+        startedOn(artist: Artist): string | null {
+            const pieces = [artist.started_on_year, artist.started_on_month, artist.started_on_day];
+            const date = pieces.filter((p) => p).join("-");
+            return (date !== "") ? date : null;
         },
 
         async urls(artist: Artist): Promise<ArtistUrl[]> {
