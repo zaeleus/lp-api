@@ -20,6 +20,7 @@ export const typeDefs = `
         albums: [Album!]!
         names: [ArtistName!]!
         urls: [ArtistUrl!]!
+        groupships: [Membership!]!
         memberships: [Membership!]!
     }
 `;
@@ -39,6 +40,19 @@ export const resolvers = {
             const pieces = [artist.ended_on_year, artist.ended_on_month, artist.ended_on_day];
             const date = pieces.filter((p) => p).join("-");
             return (date !== "") ? date : null;
+        },
+
+        async groupships(artist: Artist): Promise<Membership[]> {
+            try {
+                return await Membership.query()
+                    .select("memberships.*")
+                    .innerJoin("artist_credits", "memberships.artist_credit_id", "artist_credits.id")
+                    .innerJoin("artist_credit_names", "artist_credits.id", "artist_credit_names.artist_credit_id")
+                    .where("artist_credit_names.artist_id", artist.id)
+                    .groupBy("memberships.id");
+            } catch (err) {
+                throw new Error(err.message);
+            }
         },
 
         kind(artist: Artist): string {
