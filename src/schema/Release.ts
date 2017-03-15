@@ -12,6 +12,7 @@ export const typeDefs = `
         country: String
         catalogNumber: String
         disambiguation: String
+        artworkUrl: String!
         album: Album!
         media: [Medium!]!
         urls: [ReleaseUrl!]!
@@ -32,6 +33,10 @@ export const resolvers = {
             } catch (err) {
                 throw new Error(err.message);
             }
+        },
+
+        artworkUrl(release: Release): string {
+            return `/store/${release.id}.jpg`;
         },
 
         async media(release: Release): Promise<Medium[]> {

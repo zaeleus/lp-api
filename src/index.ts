@@ -31,5 +31,7 @@ app.use(morgan("dev"));
 app.use("/graphql", bodyParser.json(), graphqlExpress(graphqlOptions));
 app.use("/graphiql", graphiqlExpress({ endpointURL: "/graphql" }));
 
+app.use(express.static("public"));
+
 // tslint:disable-next-line:no-console
 app.listen(PORT, () => console.log(`Listening on :${PORT}`));
