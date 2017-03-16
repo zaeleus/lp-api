@@ -42,8 +42,15 @@ class Release extends Model {
         return this.catalog_number;
     }
 
+    public siblings(): Promise<Release[]> {
+        return Release.query()
+            .where("album_id", "=", this.album_id)
+            .andWhere("id", "!=", this.id);
+    }
+
     // tslint:disable:variable-name
     public id: number;
+    public album_id: number;
     public released_on: Date;
     public country?: string;
     public catalog_number?: string;

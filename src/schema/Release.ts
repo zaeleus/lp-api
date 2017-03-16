@@ -15,6 +15,7 @@ export const typeDefs = `
         artworkUrl: String!
         album: Album!
         media: [Medium!]!
+        siblings: [Release]!
         urls: [ReleaseUrl!]!
     }
 `;
@@ -53,6 +54,14 @@ export const resolvers = {
 
         releasedOn(release: Release): string {
             return moment(release.releasedOn).format("YYYY-MM-DD");
+        },
+
+        async siblings(release: Release): Promise<Release[]> {
+            try {
+                return await release.siblings();
+            } catch (err) {
+                throw new Error(err.message);
+            }
         },
 
         async urls(release: Release): Promise<ReleaseUrl[]> {
