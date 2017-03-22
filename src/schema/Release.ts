@@ -37,7 +37,7 @@ export const resolvers = {
         },
 
         artworkUrl(release: Release): string {
-            return `/store/${release.id}.jpg`;
+            return `${process.env.STORE_HOST}/store/${release.id}.jpg`;
         },
 
         async media(release: Release): Promise<Medium[]> {
