@@ -6,13 +6,18 @@ import Release from "../models/Release";
 import ReleaseUrl from "../models/ReleaseUrl";
 
 export const typeDefs = `
+    type ArtworkUrls {
+        original: String!
+        thumbnail: String!
+    }
+
     type Release {
         id: ID!
         releasedOn: String!
         country: String
         catalogNumber: String
         disambiguation: String
-        artworkUrl: String!
+        artworkUrls: ArtworkUrls!
         album: Album!
         media: [Medium!]!
         siblings: [Release]!
@@ -36,8 +41,17 @@ export const resolvers = {
             }
         },
 
-        artworkUrl(release: Release): string {
-            return `${process.env.STORE_HOST}/store/${release.id}.jpg`;
+        artworkUrls(release: Release): any {
+            if (!release.artworkData) {
+                throw new Error("missing artwork data");
+            }
+
+            const data = JSON.parse(release.artworkData);
+
+            return {
+                original: `${process.env.STORE_HOST}/store/${data.original.id}.jpg`,
+                thumbnail: `${process.env.STORE_HOST}/store/${data.thumbnail.id}.jpg`,
+            };
         },
 
         async media(release: Release): Promise<Medium[]> {

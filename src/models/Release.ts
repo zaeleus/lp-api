@@ -34,6 +34,10 @@ class Release extends Model {
         },
     };
 
+    public get artworkData(): string | undefined {
+        return this.artwork_data;
+    }
+
     public get releasedOn(): Date {
         return this.released_on;
     }
@@ -55,6 +59,7 @@ class Release extends Model {
     public country?: string;
     public catalog_number?: string;
     public disambiguation?: string;
+    public artwork_data?: string;
     // tslint:enable:variable-name
 
     public album?: Album;

@@ -7,6 +7,7 @@ exports.up = knex => (
     country character varying,
     catalog_number character varying,
     disambiguation character varying,
+    artwork_data text,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL
     );
