@@ -46,7 +46,7 @@ class Artist extends Model {
             .innerJoin("artist_names", "artists.id", "artist_names.artist_id")
             .where("artist_names.name", "ILIKE", `%${query}%`)
             .groupBy("artists.id");
-    };
+    }
 
     public albums(): Promise<Album[]> {
         return Album.query()

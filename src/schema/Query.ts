@@ -6,6 +6,7 @@ import Release from "../models/Release";
 
 export const typeDefs = `
     type Query {
+        albums(query: String!): [Album!]!
         albumsByReleaseMonth(date: String!): [Album!]!
         artist(id: ID!): Artist
         artists(query: String!): [Artist!]!
@@ -17,6 +18,14 @@ export const typeDefs = `
 
 export const resolvers = {
     Query: {
+        async albums(root: any, { query }: { query: string }): Promise<Album[]> {
+            try {
+                return await Album.search(query);
+            } catch (err) {
+                throw new Error(err.message);
+            }
+        },
+
         async albumsByReleaseMonth(root: any, { date }: { date: string }): Promise<Album[]> {
             const parsedDate = moment(date, "YYYY-MM");
             const start = parsedDate.startOf("month").format("YYYY-MM-DD");
