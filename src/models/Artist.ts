@@ -4,6 +4,7 @@ import Album from "./Album";
 import ArtistName from "./ArtistName";
 import ArtistUrl from "./ArtistUrl";
 import Membership from "./Membership";
+import Release from "./Release";
 
 export enum ArtistKind {
     Person,
@@ -49,12 +50,19 @@ class Artist extends Model {
     }
 
     public albums(): Promise<Album[]> {
+        const releasedOn = Release.query()
+            .select("releases.released_on")
+            .whereRaw("releases.album_id = albums.id")
+            .orderBy("releases.released_on")
+            .limit(1);
+
         return Album.query()
             .select("albums.*")
             .innerJoin("artist_credits", "albums.artist_credit_id", "artist_credits.id")
             .innerJoin("artist_credit_names", "artist_credits.id", "artist_credit_names.artist_credit_id")
             .where("artist_credit_names.artist_id", this.id)
-            .groupBy("albums.id");
+            .groupBy("albums.id")
+            .orderByRaw(`(${releasedOn.toString()}) desc`);
     }
 
     // tslint:disable:variable-name
