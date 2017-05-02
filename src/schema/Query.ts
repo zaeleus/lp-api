@@ -18,7 +18,7 @@ export const typeDefs = `
 
 export const resolvers = {
     Query: {
-        async albums(root: any, { query }: { query: string }): Promise<Album[]> {
+        async albums(_root: any, { query }: { query: string }): Promise<Album[]> {
             try {
                 return await Album.search(query);
             } catch (err) {
@@ -26,7 +26,7 @@ export const resolvers = {
             }
         },
 
-        async albumsByReleaseMonth(root: any, { date }: { date: string }): Promise<Album[]> {
+        async albumsByReleaseMonth(_root: any, { date }: { date: string }): Promise<Album[]> {
             const parsedDate = moment(date, "YYYY-MM");
             const start = parsedDate.startOf("month").format("YYYY-MM-DD");
             const end = parsedDate.endOf("month").format("YYYY-MM-DD");
@@ -42,7 +42,7 @@ export const resolvers = {
             }
         },
 
-        async artist(root: any, { id }: { id: string }): Promise<Artist | null> {
+        async artist(_root: any, { id }: { id: string }): Promise<Artist | null> {
             try {
                 const artist = await Artist.query().findById(id);
                 return artist || null;
@@ -51,7 +51,7 @@ export const resolvers = {
             }
         },
 
-        async artists(root: any, { query }: { query: string }): Promise<Artist[]> {
+        async artists(_root: any, { query }: { query: string }): Promise<Artist[]> {
             try {
                 return await Artist.search(query);
             } catch (err) {
@@ -59,7 +59,7 @@ export const resolvers = {
             }
         },
 
-        async artistsByStartMonth(root: any, { date }: { date: string }): Promise<Artist[]> {
+        async artistsByStartMonth(_root: any, { date }: { date: string }): Promise<Artist[]> {
             const parsedDate = moment(date, "YYYY-MM");
 
             // moment.month() is zero-based.
@@ -74,7 +74,7 @@ export const resolvers = {
             }
         },
 
-        async recentAlbums(root: any, { first }: { first: number }): Promise<Album[]> {
+        async recentAlbums(_root: any, { first }: { first: number }): Promise<Album[]> {
             try {
                 return await Album.query()
                     .select("albums.*")
@@ -87,7 +87,7 @@ export const resolvers = {
             }
         },
 
-        async release(root: any, { id }: { id: string }): Promise<Release | null> {
+        async release(_root: any, { id }: { id: string }): Promise<Release | null> {
             try {
                 const release = await Release.query().findById(id);
                 return release || null;
