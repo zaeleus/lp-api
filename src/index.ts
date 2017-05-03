@@ -2,7 +2,7 @@ import * as bodyParser from "body-parser";
 import * as dotenv from "dotenv";
 import * as express from "express";
 import { Request } from "express";
-import { graphiqlExpress, graphqlExpress } from "graphql-server-express";
+import { graphqlExpress } from "graphql-server-express";
 import * as Knex from "knex";
 import * as morgan from "morgan";
 import { Model } from "objection";
@@ -29,7 +29,6 @@ const app = express();
 
 app.use(morgan("dev"));
 app.use("/graphql", bodyParser.json(), graphqlExpress(graphqlOptions));
-app.use("/graphiql", graphiqlExpress({ endpointURL: "/graphql" }));
 
 app.use(express.static("public"));
 
