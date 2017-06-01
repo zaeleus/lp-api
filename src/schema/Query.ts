@@ -3,6 +3,7 @@ import * as moment from "moment";
 import Album from "../models/Album";
 import Artist, { ArtistKind } from "../models/Artist";
 import Release from "../models/Release";
+import Song from "../models/Song";
 
 export const typeDefs = `
     type Query {
@@ -13,6 +14,7 @@ export const typeDefs = `
         artistsByStartMonth(date: String!): [Artist!]!
         recentAlbums(first: Int = 8): [Album!]!
         release(id: ID!): Release
+        song(id: ID!): Song
     }
 `;
 
@@ -94,6 +96,10 @@ export const resolvers = {
             } catch (err) {
                 throw new Error(err.message);
             }
+        },
+
+        async song(_root: any, { id }: { id: string }): Promise<Song | undefined> {
+            return Song.query().findById(id);
         },
     },
 };
