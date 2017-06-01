@@ -1,4 +1,3 @@
-import Album from "../models/Album";
 import ArtistCredit from "../models/ArtistCredit";
 import Contribution from "../models/Contribution";
 import Song from "../models/Song";
@@ -34,12 +33,13 @@ export const resolvers = {
             }
         },
 
-        kind(album: Album): string {
-            switch (album.kind) {
-                case 0: return "SINGLE";
-                case 1: return "EP";
-                case 2: return "LP";
-                default: throw new Error("invalid album kind");
+        kind(contribution: Contribution): string {
+            switch (contribution.kind) {
+                case 0: return "PERFORMER";
+                case 1: return "ARRANGER";
+                case 2: return "COMPOSER";
+                case 3: return "LYRICIST";
+                default: throw new Error("invalid contribution kind");
             }
         },
 
