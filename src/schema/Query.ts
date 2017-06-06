@@ -70,7 +70,8 @@ export const resolvers = {
             try {
                 return await Artist.query()
                     .where("started_on_month", "=", month)
-                    .where("kind", "=", ArtistKind.Person);
+                    .where("kind", "=", ArtistKind.Person)
+                    .orderBy("started_on_day");
             } catch (err) {
                 throw new Error(err.message);
             }
