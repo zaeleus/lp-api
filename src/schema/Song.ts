@@ -1,5 +1,6 @@
 import ArtistCredit from "../models/ArtistCredit";
 import Contribution from "../models/Contribution";
+import Release from "../models/Release";
 import Song from "../models/Song";
 import SongName from "../models/SongName";
 import SongUrl from "../models/SongUrl";
@@ -7,6 +8,7 @@ import SongUrl from "../models/SongUrl";
 export const typeDefs = `
     type Song {
         id: ID!
+        appearsOn: [Release]!
         artistCredit: ArtistCredit!
         contributions: [Contribution!]!
         names: [SongName!]!
@@ -16,6 +18,15 @@ export const typeDefs = `
 
 export const resolvers = {
     Song: {
+        async appearsOn(song: Song): Promise<Release[]> {
+            return await Release.query()
+                .select("releases.*")
+                .innerJoin("media", "releases.id", "media.release_id")
+                .innerJoin("tracks", "media.id", "tracks.medium_id")
+                .innerJoin("songs", "tracks.song_id", "songs.id")
+                .where("songs.id", song.id);
+        },
+
         async artistCredit(song: Song): Promise<ArtistCredit> {
             try {
                 const s = await song.$loadRelated("artistCredit");
