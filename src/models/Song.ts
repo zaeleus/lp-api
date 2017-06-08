@@ -43,6 +43,14 @@ class Song extends Model {
         },
     };
 
+    public static search(query: string): Promise<Song[]> {
+        return Song.query()
+            .select("songs.*")
+            .innerJoin("song_names", "songs.id", "song_names.song_id")
+            .where("song_names.name", "ILIKE", `%${query}%`)
+            .groupBy("songs.id");
+    }
+
     // tslint:disable:variable-name
     public id: number;
     public artist_credit_id: number;

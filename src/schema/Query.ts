@@ -15,6 +15,7 @@ export const typeDefs = `
         recentAlbums(first: Int = 8): [Album!]!
         release(id: ID!): Release
         song(id: ID!): Song
+        songs(query: String!): [Song!]!
     }
 `;
 
@@ -101,6 +102,14 @@ export const resolvers = {
 
         async song(_root: any, { id }: { id: string }): Promise<Song | undefined> {
             return Song.query().findById(id);
+        },
+
+        async songs(_root: any, { query }: { query: string }): Promise<Song[]> {
+            try {
+                return await Song.search(query);
+            } catch (err) {
+                throw new Error(err.message);
+            }
         },
     },
 };
