@@ -10,6 +10,7 @@ import { resolvers as artistUrlResolvers, typeDefs as artistUrlTypeDefs } from "
 import { resolvers as contributionResolvers, typeDefs as contributionTypeDefs } from "./Contribution";
 import { resolvers as mediumResolvers, typeDefs as mediumTypeDefs } from "./Medium";
 import { resolvers as membershipResolvers, typeDefs as membershipTypeDefs } from "./Membership";
+import { resolvers as mutationResolvers, typeDefs as mutationTypeDefs } from "./Mutation";
 import { resolvers as queryResolvers, typeDefs as queryTypeDefs } from "./Query";
 import { resolvers as releaseResolvers, typeDefs as releaseTypeDefs } from "./Release";
 import { resolvers as releaseUrlResolvers, typeDefs as releaseUrlTypeDefs } from "./ReleaseUrl";
@@ -30,6 +31,7 @@ const typeDefs = [
     contributionTypeDefs,
     mediumTypeDefs,
     membershipTypeDefs,
+    mutationTypeDefs,
     queryTypeDefs,
     releaseTypeDefs,
     releaseUrlTypeDefs,
@@ -51,6 +53,7 @@ const resolvers = {
     ...contributionResolvers,
     ...mediumResolvers,
     ...membershipResolvers,
+    ...mutationResolvers,
     ...queryResolvers,
     ...releaseResolvers,
     ...releaseUrlResolvers,
