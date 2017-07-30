@@ -1,4 +1,5 @@
 import * as moment from "moment";
+import { QueryBuilder } from "objection";
 
 import Album from "../models/Album";
 import Artist, { ArtistKind } from "../models/Artist";
@@ -10,7 +11,7 @@ export const typeDefs = `
         albums(query: String!): [Album!]!
         albumsByReleaseMonth(date: String!): [Album!]!
         artist(id: ID!): Artist
-        artists(query: String!): [Artist!]!
+        artists(query: String!, limit: Int): [Artist!]!
         artistsByStartMonth(date: String!): [Artist!]!
         recentAlbums(first: Int = 8): [Album!]!
         release(id: ID!): Release
@@ -54,9 +55,15 @@ export const resolvers = {
             }
         },
 
-        async artists(_root: any, { query }: { query: string }): Promise<Artist[]> {
+        async artists(_root: any, { query, limit }: { query: string, limit: number }): Promise<Artist[]> {
             try {
-                return await Artist.search(query);
+                let builder = Artist.search(query) as QueryBuilder<Artist>;
+
+                if (limit) {
+                    builder = builder.limit(limit);
+                }
+
+                return await builder;
             } catch (err) {
                 throw new Error(err.message);
             }
