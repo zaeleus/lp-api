@@ -4,6 +4,12 @@ exports.up = knex => (
       id serial PRIMARY KEY,
       group_id integer NOT NULL,
       artist_credit_id integer NOT NULL,
+      started_on_year smallint,
+      started_on_month smallint,
+      started_on_day smallint,
+      ended_on_year smallint,
+      ended_on_month smallint,
+      ended_on_day smallint,
       created_at timestamp without time zone NOT NULL,
       updated_at timestamp without time zone NOT NULL
     );

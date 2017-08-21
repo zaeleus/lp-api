@@ -7,6 +7,8 @@ export const typeDefs = `
         id: ID!
         group: Artist!
         artistCredit: ArtistCredit!
+        startedOn: String
+        endedOn: String
     }
 `;
 
@@ -26,6 +28,12 @@ export const resolvers = {
             }
         },
 
+        endedOn(membership: Membership): string | null {
+            const pieces = [membership.ended_on_year, membership.ended_on_month, membership.ended_on_day];
+            const date = pieces.filter((p) => p).map((p: number) => (p < 10) ? `0${p}` : `${p}`).join("-");
+            return (date !== "") ? date : null;
+        },
+
         async group(membership: Membership): Promise<Artist> {
             try {
                 const m = await membership.$loadRelated("group");
@@ -38,6 +46,12 @@ export const resolvers = {
             } catch (err) {
                 throw new Error(err.message);
             }
+        },
+
+        startedOn(membership: Membership): string | null {
+            const pieces = [membership.started_on_year, membership.started_on_month, membership.started_on_day];
+            const date = pieces.filter((p) => p).map((p: number) => (p < 10) ? `0${p}` : `${p}`).join("-");
+            return (date !== "") ? date : null;
         },
     },
 };
