@@ -39,6 +39,7 @@ export const resolvers = {
         async patchArtist(_root: any, { input }: { input: IArtistInput }): Promise<Artist> {
             try {
                 return await Artist.query().patchAndFetchById(input.id, {
+                    country: input.country,
                     kind: (input.kind === "PERSON") ? ArtistKind.Person : ArtistKind.Group,
                 });
             } catch (err) {
