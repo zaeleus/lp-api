@@ -1,7 +1,6 @@
 import Medium from "../models/Medium";
 import Track from "../models/Track";
 
-
 export const typeDefs = `
     enum MediumKind {
         CD

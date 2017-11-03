@@ -49,22 +49,6 @@ class Artist extends Model {
             .groupBy("artists.id");
     }
 
-    public albums(): Promise<Album[]> {
-        const releasedOn = Release.query()
-            .select("releases.released_on")
-            .whereRaw("releases.album_id = albums.id")
-            .orderBy("releases.released_on")
-            .limit(1);
-
-        return Album.query()
-            .select("albums.*")
-            .innerJoin("artist_credits", "albums.artist_credit_id", "artist_credits.id")
-            .innerJoin("artist_credit_names", "artist_credits.id", "artist_credit_names.artist_credit_id")
-            .where("artist_credit_names.artist_id", this.id)
-            .groupBy("albums.id")
-            .orderByRaw(`(${releasedOn.toString()}) desc`);
-    }
-
     // tslint:disable:variable-name
     public id: number;
     public kind: ArtistKind;
@@ -81,6 +65,22 @@ class Artist extends Model {
     public memberships?: Membership[];
     public names?: ArtistName[];
     public urls?: ArtistUrl[];
+
+    public albums(): Promise<Album[]> {
+        const releasedOn = Release.query()
+            .select("releases.released_on")
+            .whereRaw("releases.album_id = albums.id")
+            .orderBy("releases.released_on")
+            .limit(1);
+
+        return Album.query()
+            .select("albums.*")
+            .innerJoin("artist_credits", "albums.artist_credit_id", "artist_credits.id")
+            .innerJoin("artist_credit_names", "artist_credits.id", "artist_credit_names.artist_credit_id")
+            .where("artist_credit_names.artist_id", this.id)
+            .groupBy("albums.id")
+            .orderByRaw(`(${releasedOn.toString()}) desc`);
+    }
 }
 
 export default Artist;

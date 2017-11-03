@@ -46,7 +46,7 @@ class Album extends Model {
             .innerJoin("album_names", "albums.id", "album_names.album_id")
             .where("album_names.name", "ILIKE", `%${query}%`)
             .groupBy("albums.id");
-    };
+    }
 
     public id: number;
     public kind: AlbumKind;

@@ -34,6 +34,21 @@ class Release extends Model {
         },
     };
 
+    // tslint:disable:variable-name
+    public id: number;
+    public album_id: number;
+    public released_on: Date;
+    public country?: string;
+    public catalog_number?: string;
+    public disambiguation?: string;
+    public artwork_data?: string;
+    // tslint:enable:variable-name
+
+    public album?: Album;
+
+    public urls?: ReleaseUrl[];
+    public media?: Medium[];
+
     public get artworkData(): string | undefined {
         return this.artwork_data;
     }
@@ -51,21 +66,6 @@ class Release extends Model {
             .where("album_id", "=", this.album_id)
             .andWhere("id", "!=", this.id);
     }
-
-    // tslint:disable:variable-name
-    public id: number;
-    public album_id: number;
-    public released_on: Date;
-    public country?: string;
-    public catalog_number?: string;
-    public disambiguation?: string;
-    public artwork_data?: string;
-    // tslint:enable:variable-name
-
-    public album?: Album;
-
-    public urls?: ReleaseUrl[];
-    public media?: Medium[];
 }
 
 export default Release;
