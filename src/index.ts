@@ -1,5 +1,4 @@
-import { GraphQLOptions } from "apollo-server-core";
-import { graphqlExpress } from "apollo-server-express";
+import { ExpressGraphQLOptionsFunction, graphqlExpress } from "apollo-server-express";
 import * as bodyParser from "body-parser";
 import * as dotenv from "dotenv";
 import * as express from "express";
@@ -20,7 +19,7 @@ const knex = Knex({
 
 Model.knex(knex);
 
-const graphqlOptions = (request: express.Request): GraphQLOptions => ({
+const graphqlOptions: ExpressGraphQLOptionsFunction = (request) => ({
     context: { request, knex },
     schema,
 });

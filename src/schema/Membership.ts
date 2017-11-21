@@ -2,6 +2,8 @@ import Artist from "../models/Artist";
 import ArtistCredit from "../models/ArtistCredit";
 import Membership from "../models/Membership";
 
+import { formatPartialDate } from "../util";
+
 export const typeDefs = `
     type Membership {
         id: ID!
@@ -29,8 +31,11 @@ export const resolvers = {
         },
 
         endedOn(membership: Membership): string | null {
-            const pieces = [membership.ended_on_year, membership.ended_on_month, membership.ended_on_day];
-            const date = pieces.filter((p) => p).map((p: number) => (p < 10) ? `0${p}` : `${p}`).join("-");
+            const date = formatPartialDate(
+                membership.ended_on_year,
+                membership.ended_on_month,
+                membership.ended_on_day,
+            );
             return (date !== "") ? date : null;
         },
 
@@ -49,8 +54,11 @@ export const resolvers = {
         },
 
         startedOn(membership: Membership): string | null {
-            const pieces = [membership.started_on_year, membership.started_on_month, membership.started_on_day];
-            const date = pieces.filter((p) => p).map((p: number) => (p < 10) ? `0${p}` : `${p}`).join("-");
+            const date = formatPartialDate(
+                membership.started_on_year,
+                membership.started_on_month,
+                membership.started_on_day,
+            );
             return (date !== "") ? date : null;
         },
     },

@@ -4,6 +4,8 @@ import ArtistName from "../models/ArtistName";
 import ArtistUrl from "../models/ArtistUrl";
 import Membership from "../models/Membership";
 
+import { formatPartialDate } from "../util";
+
 export const typeDefs = `
     enum ArtistKind {
         PERSON
@@ -37,8 +39,7 @@ export const resolvers = {
         },
 
         endedOn(artist: Artist): string | null {
-            const pieces = [artist.ended_on_year, artist.ended_on_month, artist.ended_on_day];
-            const date = pieces.filter((p) => p).map((p: number) => (p < 10) ? `0${p}` : `${p}`).join("-");
+            const date = formatPartialDate(artist.ended_on_year, artist.ended_on_month, artist.ended_on_day);
             return (date !== "") ? date : null;
         },
 
@@ -82,8 +83,7 @@ export const resolvers = {
         },
 
         startedOn(artist: Artist): string | null {
-            const pieces = [artist.started_on_year, artist.started_on_month, artist.started_on_day];
-            const date = pieces.filter((p) => p).map((p: number) => (p < 10) ? `0${p}` : `${p}`).join("-");
+            const date = formatPartialDate(artist.started_on_year, artist.started_on_month, artist.started_on_day);
             return (date !== "") ? date : null;
         },
 
