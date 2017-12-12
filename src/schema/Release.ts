@@ -1,4 +1,4 @@
-import * as moment from "moment";
+import { LocalDate, nativeJs } from "js-joda";
 
 import Album from "../models/Album";
 import Medium from "../models/Medium";
@@ -67,7 +67,7 @@ export const resolvers = {
         },
 
         releasedOn(release: Release): string {
-            return moment(release.releasedOn).format("YYYY-MM-DD");
+            return LocalDate.from(nativeJs(release.releasedOn)).toString();
         },
 
         async siblings(release: Release): Promise<Release[]> {

@@ -1,4 +1,4 @@
-import * as moment from "moment";
+import { YearMonth } from "js-joda";
 import { QueryBuilder } from "objection";
 
 import Album from "../models/Album";
@@ -31,9 +31,9 @@ export const resolvers = {
         },
 
         async albumsByReleaseMonth(_root: any, { date }: { date: string }): Promise<Album[]> {
-            const parsedDate = moment(date, "YYYY-MM");
-            const start = parsedDate.startOf("month").format("YYYY-MM-DD");
-            const end = parsedDate.endOf("month").format("YYYY-MM-DD");
+            const parsedDate = YearMonth.parse(date);
+            const start = parsedDate.atDay(1).toString();
+            const end = parsedDate.atEndOfMonth().toString();
 
             try {
                 return await Album.query()
@@ -70,10 +70,8 @@ export const resolvers = {
         },
 
         async artistsByStartMonth(_root: any, { date }: { date: string }): Promise<Artist[]> {
-            const parsedDate = moment(date, "YYYY-MM");
-
-            // moment.month() is zero-based.
-            const month = parsedDate.month() + 1;
+            const parsedDate = YearMonth.parse(date);
+            const month = parsedDate.month().value();
 
             try {
                 return await Artist.query()
