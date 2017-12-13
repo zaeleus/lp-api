@@ -2,7 +2,7 @@ import Artist from "../models/Artist";
 import ArtistCredit from "../models/ArtistCredit";
 import Membership from "../models/Membership";
 
-import { formatPartialDate } from "../util";
+import PartialDate from "../PartialDate";
 
 export const typeDefs = `
     type Membership {
@@ -31,11 +31,12 @@ export const resolvers = {
         },
 
         endedOn(membership: Membership): string | null {
-            const date = formatPartialDate(
+            const date = new PartialDate(
                 membership.ended_on_year,
                 membership.ended_on_month,
                 membership.ended_on_day,
-            );
+            ).toString();
+
             return (date !== "") ? date : null;
         },
 
@@ -54,11 +55,12 @@ export const resolvers = {
         },
 
         startedOn(membership: Membership): string | null {
-            const date = formatPartialDate(
+            const date = new PartialDate(
                 membership.started_on_year,
                 membership.started_on_month,
                 membership.started_on_day,
-            );
+            ).toString();
+
             return (date !== "") ? date : null;
         },
     },

@@ -4,7 +4,7 @@ import ArtistName from "../models/ArtistName";
 import ArtistUrl from "../models/ArtistUrl";
 import Membership from "../models/Membership";
 
-import { formatPartialDate } from "../util";
+import PartialDate from "../PartialDate";
 
 export const typeDefs = `
     enum ArtistKind {
@@ -39,7 +39,12 @@ export const resolvers = {
         },
 
         endedOn(artist: Artist): string | null {
-            const date = formatPartialDate(artist.ended_on_year, artist.ended_on_month, artist.ended_on_day);
+            const date = new PartialDate(
+                artist.ended_on_year,
+                artist.ended_on_month,
+                artist.ended_on_day,
+            ).toString();
+
             return (date !== "") ? date : null;
         },
 
@@ -83,7 +88,12 @@ export const resolvers = {
         },
 
         startedOn(artist: Artist): string | null {
-            const date = formatPartialDate(artist.started_on_year, artist.started_on_month, artist.started_on_day);
+            const date = new PartialDate(
+                artist.started_on_year,
+                artist.started_on_month,
+                artist.started_on_day,
+            ).toString();
+
             return (date !== "") ? date : null;
         },
 
