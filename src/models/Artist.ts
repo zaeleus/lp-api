@@ -9,9 +9,9 @@ import Membership from "./Membership";
 import Release from "./Release";
 
 export enum ArtistKind {
-    Unknown,
     Person,
     Group,
+    Unknown,
 }
 
 class Artist extends Model {
