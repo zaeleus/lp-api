@@ -1,6 +1,37 @@
 import PartialDate from "./PartialDate";
 
 describe("PartialDate", () => {
+    describe(".parse", () => {
+        test("parses a (partial) YYYY-MM-DD string to a PartialDate", () => {
+            let d;
+
+            d = PartialDate.parse(undefined);
+            expect(d.year).toBe(undefined);
+            expect(d.month).toBe(undefined);
+            expect(d.day).toBe(undefined);
+
+            d = PartialDate.parse("");
+            expect(d.year).toBe(undefined);
+            expect(d.month).toBe(undefined);
+            expect(d.day).toBe(undefined);
+
+            d = PartialDate.parse("2017");
+            expect(d.year).toBe(2017);
+            expect(d.month).toBe(undefined);
+            expect(d.day).toBe(undefined);
+
+            d = PartialDate.parse("2017-11");
+            expect(d.year).toBe(2017);
+            expect(d.month).toBe(11);
+            expect(d.day).toBe(undefined);
+
+            d = PartialDate.parse("2017-11-13");
+            expect(d.year).toBe(2017);
+            expect(d.month).toBe(11);
+            expect(d.day).toBe(13);
+        });
+    });
+
     describe(".toString", () => {
         describe("all pieces are undefined", () => {
             test("returns an empty string", () => {

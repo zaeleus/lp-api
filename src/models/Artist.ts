@@ -1,5 +1,7 @@
+import { LocalDate, ZoneOffset } from "js-joda";
 import { Model } from "objection";
 
+import { INormalizedArtistAttributes } from "../normalizers/artist";
 import Album from "./Album";
 import ArtistName from "./ArtistName";
 import ArtistUrl from "./ArtistUrl";
@@ -7,6 +9,7 @@ import Membership from "./Membership";
 import Release from "./Release";
 
 export enum ArtistKind {
+    Unknown,
     Person,
     Group,
 }
@@ -41,6 +44,30 @@ class Artist extends Model {
         },
     };
 
+    public static create(attributes: INormalizedArtistAttributes): Promise<Artist> {
+        const { startedOn, endedOn } = attributes;
+        const now = LocalDate.now(ZoneOffset.UTC).toString();
+
+        const values = {
+            country: attributes.country,
+            disambiguation: attributes.disambiguation,
+            kind: attributes.kind,
+
+            started_on_day: startedOn.day,
+            started_on_month: startedOn.month,
+            started_on_year: startedOn.year,
+
+            ended_on_day: endedOn.day,
+            ended_on_month: endedOn.month,
+            ended_on_year: endedOn.year,
+
+            created_at: now,
+            updated_at: now,
+        };
+
+        return Artist.query().insertAndFetch(values);
+    }
+
     public static search(query: string): Promise<Artist[]> {
         return Artist.query()
             .select("artists.*")
@@ -51,15 +78,21 @@ class Artist extends Model {
 
     // tslint:disable:variable-name
     public id: number;
+
     public kind: ArtistKind;
     public country: string;
     public disambiguation?: string;
+
     public started_on_year?: number;
     public started_on_month?: number;
     public started_on_day?: number;
+
     public ended_on_year?: number;
     public ended_on_month?: number;
     public ended_on_day?: number;
+
+    public created_at: string;
+    public updated_at: string;
     // tslint:enable:variable-name
 
     public memberships?: Membership[];

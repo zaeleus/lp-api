@@ -1,5 +1,5 @@
 import Artist, { ArtistKind } from "../models/Artist";
-import ArtistName from "../models/ArtistName";
+import normalizer from "../normalizers/artist";
 
 interface IAristNameInput {
     id: string;
@@ -11,6 +11,7 @@ interface IAristNameInput {
 
 interface IArtistInput {
     id: string;
+    disambigaution?: string;
     kind: string;
     country: string;
     startedOn?: string;
@@ -29,6 +30,7 @@ export const typeDefs = `
 
     input ArtistInput {
         id: ID!
+        disambiguation: String
         kind: String!
         country: String!
         startedOn: String
@@ -45,25 +47,14 @@ export const typeDefs = `
 export const resolvers = {
     Mutation: {
         async createArtist(_root: any, { input }: { input: IArtistInput }): Promise<Artist> {
+            const attributes = normalizer(input);
+
             let artist;
 
             try {
-                artist = await Artist.query().insert({
-                    // kind: input.kind,
-                    country: input.country,
-                });
+                artist = Artist.create(attributes);
             } catch (err) {
                 throw new Error(err.message);
-            }
-
-            for (const name of input.names) {
-                await ArtistName.query().insert({
-                    // artist_id: artist.id,
-                    is_default: name.isDefault,
-                    is_original: name.isOriginal,
-                    locale: name.locale,
-                    name: name.name,
-                });
             }
 
             return artist;

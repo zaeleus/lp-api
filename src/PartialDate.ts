@@ -1,6 +1,25 @@
+const parseNumber = (s: string): number | undefined => {
+    const i = parseInt(s, 10);
+    return (isNaN(i)) ? undefined : i;
+};
+
 const zeroPad = (n: number): string => (n < 10) ? `0${n}` : `${n}`;
 
 class PartialDate {
+    public static parse(s?: string): PartialDate {
+        if (!s) {
+            return new PartialDate();
+        }
+
+        const pieces = s.split("-");
+
+        const year = parseNumber(pieces[0]);
+        const month = parseNumber(pieces[1]);
+        const day = parseNumber(pieces[2]);
+
+        return new PartialDate(year, month, day);
+    }
+
     public year?: number;
     public month?: number;
     public day?: number;
