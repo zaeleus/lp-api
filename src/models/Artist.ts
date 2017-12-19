@@ -2,6 +2,7 @@ import { LocalDate, ZoneOffset } from "js-joda";
 import { Model } from "objection";
 
 import { INormalizedArtistAttributes } from "../normalizers/artist";
+import PartialDate from "../PartialDate";
 import Album from "./Album";
 import ArtistName from "./ArtistName";
 import ArtistUrl from "./ArtistUrl";
@@ -50,16 +51,16 @@ class Artist extends Model {
 
         const values = {
             country: attributes.country,
-            disambiguation: attributes.disambiguation,
+            disambiguation: attributes.disambiguation || null,
             kind: attributes.kind,
 
-            started_on_day: startedOn.day,
-            started_on_month: startedOn.month,
-            started_on_year: startedOn.year,
+            started_on_day: startedOn.day || null,
+            started_on_month: startedOn.month || null,
+            started_on_year: startedOn.year || null,
 
-            ended_on_day: endedOn.day,
-            ended_on_month: endedOn.month,
-            ended_on_year: endedOn.year,
+            ended_on_day: endedOn.day || null,
+            ended_on_month: endedOn.month || null,
+            ended_on_year: endedOn.year || null,
 
             created_at: now,
             updated_at: now,
@@ -81,15 +82,15 @@ class Artist extends Model {
 
     public kind: ArtistKind;
     public country: string;
-    public disambiguation?: string;
+    public disambiguation: string | null;
 
-    public started_on_year?: number;
-    public started_on_month?: number;
-    public started_on_day?: number;
+    public started_on_year: number | null;
+    public started_on_month: number | null;
+    public started_on_day: number | null;
 
-    public ended_on_year?: number;
-    public ended_on_month?: number;
-    public ended_on_day?: number;
+    public ended_on_year: number | null;
+    public ended_on_month: number | null;
+    public ended_on_day: number | null;
 
     public created_at: string;
     public updated_at: string;
@@ -113,6 +114,52 @@ class Artist extends Model {
             .where("artist_credit_names.artist_id", this.id)
             .groupBy("albums.id")
             .orderByRaw(`(${releasedOn.toString()}) desc`);
+    }
+
+    public update(attributes: Partial<INormalizedArtistAttributes>): Promise<Artist> {
+        const { startedOn, endedOn } = attributes;
+
+        // tslint:disable:variable-name
+        let started_on_day;
+        let started_on_month;
+        let started_on_year;
+
+        let ended_on_day;
+        let ended_on_month;
+        let ended_on_year;
+        // tslint:enable:variable-name
+
+        if (startedOn) {
+            started_on_day = startedOn.day || null;
+            started_on_month = startedOn.month || null;
+            started_on_year = startedOn.year || null;
+        }
+
+        if (endedOn) {
+            ended_on_day = endedOn.day || null;
+            ended_on_month = endedOn.month || null;
+            ended_on_year = endedOn.year || null;
+        }
+
+        const now = LocalDate.now(ZoneOffset.UTC).toString();
+
+        const values = {
+            country: attributes.country,
+            disambiguation: attributes.disambiguation,
+            kind: attributes.kind,
+
+            started_on_day,
+            started_on_month,
+            started_on_year,
+
+            ended_on_day,
+            ended_on_month,
+            ended_on_year,
+
+            updated_at: now,
+        };
+
+        return Artist.query().patchAndFetchById(this.id, values);
     }
 }
 

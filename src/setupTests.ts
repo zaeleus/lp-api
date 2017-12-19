@@ -11,4 +11,5 @@ const knex = Knex({
 
 Model.knex(knex);
 
-afterAll(() => knex.destroy());
+// TODO: move to a global teardown
+// afterAll(() => knex.destroy());

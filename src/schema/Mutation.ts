@@ -1,5 +1,5 @@
-import Artist, { ArtistKind } from "../models/Artist";
-import normalizer from "../normalizers/artist";
+import Artist from "../models/Artist";
+import normalize, { normalizePartial } from "../normalizers/artist";
 
 interface IAristNameInput {
     id: string;
@@ -47,7 +47,7 @@ export const typeDefs = `
 export const resolvers = {
     Mutation: {
         async createArtist(_root: any, { input }: { input: IArtistInput }): Promise<Artist> {
-            const attributes = normalizer(input);
+            const attributes = normalize(input);
 
             let artist;
 
@@ -62,10 +62,10 @@ export const resolvers = {
 
         async patchArtist(_root: any, { input }: { input: IArtistInput }): Promise<Artist> {
             try {
-                return await Artist.query().patchAndFetchById(input.id, {
-                    country: input.country,
-                    kind: (input.kind === "PERSON") ? ArtistKind.Person : ArtistKind.Group,
-                });
+                const artist = await Artist.query().findById(input.id);
+                if (!artist) { throw new Error("artist not found"); }
+                const attributes = normalizePartial(input);
+                return await artist.update(attributes);
             } catch (err) {
                 throw new Error(err.message);
             }

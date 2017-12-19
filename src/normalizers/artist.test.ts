@@ -1,54 +1,48 @@
 import { ArtistKind } from "../models/Artist";
-import {
-    normalizeCountry,
-    normalizeDisambiguation,
-    normalizeEndedOn,
-    normalizeKind,
-    normalizeStartedOn,
-} from "./artist";
+import { rules } from "./artist";
 
 test("normalizeCountry", () => {
-    expect(normalizeCountry("US")).toBe("US");
-    expect(normalizeCountry("  US ")).toBe("US");
-    expect(normalizeCountry(undefined)).toBe("");
+    expect(rules.country("US")).toBe("US");
+    expect(rules.country("  US ")).toBe("US");
+    expect(rules.country(undefined)).toBe("");
 });
 
 test("normalizeDisambiguation", () => {
-    expect(normalizeDisambiguation("singer")).toBe("singer");
-    expect(normalizeDisambiguation("  singer ")).toBe("singer");
-    expect(normalizeDisambiguation("")).toBeUndefined();
-    expect(normalizeDisambiguation(undefined)).toBeUndefined();
+    expect(rules.disambiguation("singer")).toBe("singer");
+    expect(rules.disambiguation("  singer ")).toBe("singer");
+    expect(rules.disambiguation("")).toBeUndefined();
+    expect(rules.disambiguation(undefined)).toBeUndefined();
 });
 
 test("normalizeEndedOn", () => {
     let d;
 
-    d = normalizeEndedOn("2017-12");
+    d = rules.endedOn("2017-12");
     expect(d.toString()).toBe("2017-12");
 
-    d = normalizeEndedOn("");
+    d = rules.endedOn("");
     expect(d.toString()).toBe("");
 
-    d = normalizeEndedOn(undefined);
+    d = rules.endedOn(undefined);
     expect(d.toString()).toBe("");
 });
 
 test("normalizeKind", () => {
-    expect(normalizeKind("PERSON")).toBe(ArtistKind.Person);
-    expect(normalizeKind("GROUP")).toBe(ArtistKind.Group);
-    expect(normalizeKind("foo")).toBe(ArtistKind.Unknown);
-    expect(normalizeKind(undefined)).toBe(ArtistKind.Unknown);
+    expect(rules.kind("PERSON")).toBe(ArtistKind.Person);
+    expect(rules.kind("GROUP")).toBe(ArtistKind.Group);
+    expect(rules.kind("foo")).toBe(ArtistKind.Unknown);
+    expect(rules.kind(undefined)).toBe(ArtistKind.Unknown);
 });
 
 test("normalizeStartedOn", () => {
     let d;
 
-    d = normalizeStartedOn("2017-12");
+    d = rules.startedOn("2017-12");
     expect(d.toString()).toBe("2017-12");
 
-    d = normalizeStartedOn("");
+    d = rules.startedOn("");
     expect(d.toString()).toBe("");
 
-    d = normalizeStartedOn(undefined);
+    d = rules.startedOn(undefined);
     expect(d.toString()).toBe("");
 });
