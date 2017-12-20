@@ -1,5 +1,6 @@
 import Artist from "../models/Artist";
 import normalize, { normalizePartial } from "../normalizers/artist";
+import validate from "../validators/artist";
 
 interface IAristNameInput {
     id: string;
@@ -48,6 +49,7 @@ export const resolvers = {
     Mutation: {
         async createArtist(_root: any, { input }: { input: IArtistInput }): Promise<Artist> {
             const attributes = normalize(input);
+            validate(attributes);
 
             let artist;
 
@@ -65,6 +67,7 @@ export const resolvers = {
                 const artist = await Artist.query().findById(input.id);
                 if (!artist) { throw new Error("artist not found"); }
                 const attributes = normalizePartial(input);
+                validate(attributes);
                 return await artist.update(attributes);
             } catch (err) {
                 throw new Error(err.message);
