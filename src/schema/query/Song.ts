@@ -18,8 +18,8 @@ export const typeDefs = `
 
 export const resolvers = {
     Song: {
-        async appearsOn(song: Song): Promise<Release[]> {
-            return await Release.query()
+        appearsOn(song: Song): Promise<Release[]> {
+            return Release.query()
                 .select("releases.*")
                 .innerJoin("media", "releases.id", "media.release_id")
                 .innerJoin("tracks", "media.id", "tracks.medium_id")

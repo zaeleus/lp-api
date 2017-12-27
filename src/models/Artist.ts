@@ -2,7 +2,6 @@ import { LocalDate, ZoneOffset } from "js-joda";
 import { Model } from "objection";
 
 import { INormalizedArtistAttributes } from "../normalizers/artist";
-import PartialDate from "../PartialDate";
 import Album from "./Album";
 import ArtistName from "./ArtistName";
 import ArtistUrl from "./ArtistUrl";
