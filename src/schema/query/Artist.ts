@@ -1,10 +1,10 @@
-import Album from "../models/Album";
-import Artist from "../models/Artist";
-import ArtistName from "../models/ArtistName";
-import ArtistUrl from "../models/ArtistUrl";
-import Membership from "../models/Membership";
+import Album from "../../models/Album";
+import Artist from "../../models/Artist";
+import ArtistName from "../../models/ArtistName";
+import ArtistUrl from "../../models/ArtistUrl";
+import Membership from "../../models/Membership";
 
-import PartialDate from "../PartialDate";
+import PartialDate from "../../PartialDate";
 
 export const typeDefs = `
     enum ArtistKind {

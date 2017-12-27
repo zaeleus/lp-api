@@ -1,9 +1,9 @@
 import { LocalDate, nativeJs } from "js-joda";
 
-import Album from "../models/Album";
-import Medium from "../models/Medium";
-import Release from "../models/Release";
-import ReleaseUrl from "../models/ReleaseUrl";
+import Album from "../../models/Album";
+import Medium from "../../models/Medium";
+import Release from "../../models/Release";
+import ReleaseUrl from "../../models/ReleaseUrl";
 
 export const typeDefs = `
     type ArtworkUrls {

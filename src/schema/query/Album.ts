@@ -1,7 +1,7 @@
-import Album from "../models/Album";
-import AlbumName from "../models/AlbumName";
-import ArtistCredit from "../models/ArtistCredit";
-import Release from "../models/Release";
+import Album from "../../models/Album";
+import AlbumName from "../../models/AlbumName";
+import ArtistCredit from "../../models/ArtistCredit";
+import Release from "../../models/Release";
 
 export const typeDefs = `
     enum AlbumKind {

@@ -1,10 +1,10 @@
 import { YearMonth } from "js-joda";
 import { QueryBuilder } from "objection";
 
-import Album from "../models/Album";
-import Artist, { ArtistKind } from "../models/Artist";
-import Release from "../models/Release";
-import Song from "../models/Song";
+import Album from "../../models/Album";
+import Artist, { ArtistKind } from "../../models/Artist";
+import Release from "../../models/Release";
+import Song from "../../models/Song";
 
 export const typeDefs = `
     type Query {

@@ -1,6 +1,6 @@
-import ArtistCredit from "../models/ArtistCredit";
-import Contribution from "../models/Contribution";
-import Song from "../models/Song";
+import ArtistCredit from "../../models/ArtistCredit";
+import Contribution from "../../models/Contribution";
+import Song from "../../models/Song";
 
 export const typeDefs = `
     enum ContributionKind {

@@ -1,9 +1,9 @@
-import ArtistCredit from "../models/ArtistCredit";
-import Contribution from "../models/Contribution";
-import Release from "../models/Release";
-import Song from "../models/Song";
-import SongName from "../models/SongName";
-import SongUrl from "../models/SongUrl";
+import ArtistCredit from "../../models/ArtistCredit";
+import Contribution from "../../models/Contribution";
+import Release from "../../models/Release";
+import Song from "../../models/Song";
+import SongName from "../../models/SongName";
+import SongUrl from "../../models/SongUrl";
 
 export const typeDefs = `
     type Song {

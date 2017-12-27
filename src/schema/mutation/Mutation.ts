@@ -1,6 +1,6 @@
-import Artist from "../models/Artist";
-import normalize, { normalizePartial } from "../normalizers/artist";
-import validate from "../validators/artist";
+import Artist from "../../models/Artist";
+import normalize, { normalizePartial } from "../../normalizers/artist";
+import validate from "../../validators/artist";
 
 interface IAristNameInput {
     id: string;

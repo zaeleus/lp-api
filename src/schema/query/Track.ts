@@ -1,7 +1,7 @@
-import ArtistCredit from "../models/ArtistCredit";
-import Song from "../models/Song";
-import Track from "../models/Track";
-import TrackName from "../models/TrackName";
+import ArtistCredit from "../../models/ArtistCredit";
+import Song from "../../models/Song";
+import Track from "../../models/Track";
+import TrackName from "../../models/TrackName";
 
 export const typeDefs = `
     type Track {

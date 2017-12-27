@@ -1,5 +1,5 @@
-import Artist from "../models/Artist";
-import ArtistCreditName from "../models/ArtistCreditName";
+import Artist from "../../models/Artist";
+import ArtistCreditName from "../../models/ArtistCreditName";
 
 export const typeDefs = `
     type ArtistCreditName {

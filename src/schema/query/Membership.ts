@@ -1,8 +1,8 @@
-import Artist from "../models/Artist";
-import ArtistCredit from "../models/ArtistCredit";
-import Membership from "../models/Membership";
+import Artist from "../../models/Artist";
+import ArtistCredit from "../../models/ArtistCredit";
+import Membership from "../../models/Membership";
 
-import PartialDate from "../PartialDate";
+import PartialDate from "../../PartialDate";
 
 export const typeDefs = `
     type Membership {
