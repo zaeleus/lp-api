@@ -1,6 +1,12 @@
 import { rules } from "./artist-name";
 
 describe("rules", () => {
+    test("artistId", () => {
+        expect(rules.name("1")).toBe("1");
+        expect(rules.name("  101 ")).toBe("101");
+        expect(rules.name(undefined)).toBe("");
+    });
+
     test("isDefault", () => {
         expect(rules.isDefault(true)).toBe(true);
         expect(rules.isDefault(false)).toBe(false);

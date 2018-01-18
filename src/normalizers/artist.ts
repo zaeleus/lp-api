@@ -66,7 +66,7 @@ export const normalizePartial = (
 
     return keys.reduce<Partial<INormalizedArtistAttributes>>((map, name) => {
         if (rules[name]) {
-            map[name] = rules[name](attributes[name]);
+            map[name] = (rules[name] as any)(attributes[name]);
         }
 
         return map;

@@ -1,5 +1,13 @@
 import { INormalizedArtistNameAttributes } from "../normalizers/artist-name";
 
+const artistId = (id: string): boolean => {
+    if (id.length === 0) {
+        throw new Error("'artistId' cannot be blank");
+    }
+
+    return true;
+};
+
 const locale = (l: string): boolean => {
     if (l.length === 0) {
         throw new Error("'locale' cannot be blank");
@@ -17,6 +25,7 @@ const name = (n: string): boolean => {
 };
 
 export const rules: any = {
+    artistId,
     locale,
     name,
 };

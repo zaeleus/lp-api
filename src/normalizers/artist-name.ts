@@ -1,5 +1,5 @@
 export interface IArtistNameAttributes {
-    artistId?: number;
+    artistId?: string;
     name: string;
     locale: string;
     isDefault: boolean;
@@ -7,12 +7,14 @@ export interface IArtistNameAttributes {
 }
 
 export interface INormalizedArtistNameAttributes {
-    artistId?: number;
+    artistId: string;
     name: string;
     locale: string;
     isDefault: boolean;
     isOriginal: boolean;
 }
+
+const artistId = (id?: string): string => id ? id.trim() : "";
 
 const isDefault = (b?: boolean): boolean => !!b;
 
@@ -30,7 +32,7 @@ export const rules = {
 };
 
 const normalize = (attributes: Partial<IArtistNameAttributes>): INormalizedArtistNameAttributes => ({
-    artistId: attributes.artistId,
+    artistId: artistId(attributes.artistId),
     isDefault: isDefault(attributes.isDefault),
     isOriginal: isOriginal(attributes.isOriginal),
     locale: locale(attributes.locale),
