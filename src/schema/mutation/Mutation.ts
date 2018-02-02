@@ -28,6 +28,15 @@ interface IArtistInput {
     names?: IArtistNameInput[];
 }
 
+interface INewArtistInput {
+    disambigaution?: string;
+    kind: string;
+    country: string;
+    startedOn?: string;
+    endedOn?: string;
+    names?: IArtistNameInput[];
+}
+
 export const typeDefs = `
     input ArtistNameInput {
         id: ID!
@@ -47,8 +56,17 @@ export const typeDefs = `
         names: [ArtistNameInput]
     }
 
+    input NewArtistInput {
+        disambiguation: String
+        kind: String!
+        country: String!
+        startedOn: String
+        endedOn: String
+        names: [ArtistNameInput]
+    }
+
     type Mutation {
-        createArtist(input: ArtistInput!): Artist!
+        createArtist(input: NewArtistInput!): Artist!
         patchArtist(input: ArtistInput!): Artist!
     }
 `;
@@ -89,7 +107,7 @@ const validateArtistNames = (n: INormalizedArtistNameAttributes[]): boolean => {
 
 export const resolvers = {
     Mutation: {
-        async createArtist(_root: any, { input }: { input: IArtistInput }): Promise<Artist> {
+        async createArtist(_root: any, { input }: { input: INewArtistInput }): Promise<Artist> {
             const attributes = normalizeArtist(input);
             validateArtist(attributes);
 
