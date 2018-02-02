@@ -11,7 +11,7 @@ import validateArtist from "../../validators/artist";
 import validateArtistName from "../../validators/artist-name";
 
 interface IArtistNameInput {
-    id: string;
+    id?: string;
     name: string;
     locale: string;
     isDefault: boolean;
@@ -39,7 +39,7 @@ interface INewArtistInput {
 
 export const typeDefs = `
     input ArtistNameInput {
-        id: ID!
+        id: ID
         name: String!
         locale: String!
         isDefault: Boolean!
