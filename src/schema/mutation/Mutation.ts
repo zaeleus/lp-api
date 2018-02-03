@@ -52,7 +52,7 @@ export const typeDefs = `
         country: String!
         startedOn: String
         endedOn: String
-        names: [ArtistNameInput]
+        names: [ArtistNameInput!]
     }
 
     input NewArtistInput {
@@ -61,7 +61,7 @@ export const typeDefs = `
         country: String!
         startedOn: String
         endedOn: String
-        names: [ArtistNameInput]!
+        names: [ArtistNameInput!]!
     }
 
     type Mutation {
