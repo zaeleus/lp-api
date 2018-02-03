@@ -3,12 +3,11 @@ import ArtistName from "../../models/ArtistName";
 import normalizeArtist, {
     normalizePartial as normalizePartialArtist,
 } from "../../normalizers/artist";
-import normalizeArtistName, {
-    IArtistNameAttributes,
-    INormalizedArtistNameAttributes,
-} from "../../normalizers/artist-name";
+import normalizeArtistName from "../../normalizers/artist-name";
+import normalizeArtistNames from "../../normalizers/artist-names";
 import validateArtist from "../../validators/artist";
 import validateArtistName from "../../validators/artist-name";
+import validateArtistNames from "../../validators/artist-names";
 
 interface IArtistNameInput {
     id?: string;
@@ -34,7 +33,7 @@ interface INewArtistInput {
     country: string;
     startedOn?: string;
     endedOn?: string;
-    names?: IArtistNameInput[];
+    names: IArtistNameInput[];
 }
 
 export const typeDefs = `
@@ -62,7 +61,7 @@ export const typeDefs = `
         country: String!
         startedOn: String
         endedOn: String
-        names: [ArtistNameInput]
+        names: [ArtistNameInput]!
     }
 
     type Mutation {
@@ -70,40 +69,6 @@ export const typeDefs = `
         patchArtist(input: ArtistInput!): Artist!
     }
 `;
-
-const normalizeArtistNames = (
-    n?: Array<Partial<IArtistNameAttributes>>,
-): INormalizedArtistNameAttributes[] => {
-    if (!n) { return []; }
-    return n.map((m) => normalizeArtistName(m));
-};
-
-const validateArtistNames = (n: INormalizedArtistNameAttributes[]): boolean => {
-    if (n.length < 1) {
-        const message = `artist must have at least one name (expected >= 1, got ${n.length})`;
-        throw new Error(message);
-    }
-
-    let defaults = 0;
-    let originals = 0;
-
-    for (const name of n) {
-        if (name.isDefault) { defaults += 1; }
-        if (name.isOriginal) { originals += 1; }
-    }
-
-    if (defaults !== 1) {
-        const message = `artist names can only have one default name (expected 1, got ${defaults})`;
-        throw new Error(message);
-    }
-
-    if (originals !== 1) {
-        const message = `artist names can only have one original name (expected 1, got ${originals})`;
-        throw new Error(message);
-    }
-
-    return true;
-};
 
 export const resolvers = {
     Mutation: {
