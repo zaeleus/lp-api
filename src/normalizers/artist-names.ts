@@ -15,7 +15,7 @@ export const rules = {
 };
 
 const normalize = (
-    attributes: Array<Partial<IArtistNameAttributes>>,
+    attributes?: Array<Partial<IArtistNameAttributes>>,
 ): INormalizedArtistNameAttributes[] => (
     names(attributes)
 );

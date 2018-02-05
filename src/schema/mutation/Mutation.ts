@@ -108,10 +108,41 @@ export const resolvers = {
 
         async patchArtist(_root: any, { input }: { input: IArtistInput }): Promise<Artist> {
             try {
-                const artist = await Artist.query().findById(input.id);
+                const artistId = input.id;
+                const artist = await Artist.query().findById(artistId);
+
                 if (!artist) { throw new Error("artist not found"); }
+
                 const attributes = normalizePartialArtist(input);
                 validateArtist(attributes);
+
+                artist.update(attributes);
+
+                if (input.names) {
+                    const artistNamesAttributes = normalizeArtistNames(input.names);
+                    validateArtistNames(artistNamesAttributes);
+
+                    for (const name of artistNamesAttributes) {
+                        const artistNameAttributes = normalizeArtistName({
+                            artistId,
+                            isDefault: name.isDefault,
+                            isOriginal: name.isOriginal,
+                            locale: name.locale,
+                            name: name.name,
+                        });
+
+                        validateArtistName(artistNameAttributes);
+
+                        if (name.id.length > 0) {
+                            const artistName = await ArtistName.query().findById(name.id);
+                            if (!artistName) { throw new Error("artist name not found"); }
+                            await artistName.update(artistNameAttributes);
+                        } else {
+                            await ArtistName.create(artistNameAttributes);
+                        }
+                    }
+                }
+
                 return await artist.update(attributes);
             } catch (err) {
                 throw new Error(err.message);

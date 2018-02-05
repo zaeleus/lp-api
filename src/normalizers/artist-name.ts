@@ -1,4 +1,5 @@
 export interface IArtistNameAttributes {
+    id?: string;
     artistId?: string;
     name: string;
     locale: string;
@@ -7,6 +8,7 @@ export interface IArtistNameAttributes {
 }
 
 export interface INormalizedArtistNameAttributes {
+    id: string;
     artistId: string;
     name: string;
     locale: string;
@@ -14,7 +16,9 @@ export interface INormalizedArtistNameAttributes {
     isOriginal: boolean;
 }
 
-const artistId = (id?: string): string => id ? id.trim() : "";
+const id = (i?: string): string => i ? i.trim() : "";
+
+const artistId = (aid?: string): string => aid ? aid.trim() : "";
 
 const isDefault = (b?: boolean): boolean => !!b;
 
@@ -25,6 +29,8 @@ const name = (s?: string): string => s ? s.trim() : "";
 const locale = (s?: string): string => s ? s.trim() : "";
 
 export const rules = {
+    artistId,
+    id,
     isDefault,
     isOriginal,
     locale,
@@ -33,6 +39,7 @@ export const rules = {
 
 const normalize = (attributes: Partial<IArtistNameAttributes>): INormalizedArtistNameAttributes => ({
     artistId: artistId(attributes.artistId),
+    id: id(attributes.id),
     isDefault: isDefault(attributes.isDefault),
     isOriginal: isOriginal(attributes.isOriginal),
     locale: locale(attributes.locale),

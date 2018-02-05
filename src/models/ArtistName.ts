@@ -38,7 +38,34 @@ class ArtistName extends Model {
     public locale: string;
     public is_default: boolean;
     public is_original: boolean;
+
+    public created_at: string;
+    public updated_at: string;
     // tslint:enable:variable-name
+
+    public update(
+        attributes: Partial<INormalizedArtistNameAttributes>,
+    ): Promise<ArtistName> {
+        let artistId;
+
+        if (attributes.artistId) {
+            artistId = parseInt(attributes.artistId, 10);
+        }
+
+        const now = LocalDate.now(ZoneOffset.UTC).toString();
+
+        const values = {
+            artist_id: artistId,
+            is_default: attributes.isDefault,
+            is_original: attributes.isOriginal,
+            locale: attributes.locale,
+            name: attributes.name,
+
+            updated_at: now,
+        };
+
+        return ArtistName.query().patchAndFetchById(this.id, values);
+    }
 }
 
 export default ArtistName;

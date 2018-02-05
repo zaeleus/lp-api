@@ -2,9 +2,15 @@ import { rules } from "./artist-name";
 
 describe("rules", () => {
     test("artistId", () => {
-        expect(rules.name("1")).toBe("1");
-        expect(rules.name("  101 ")).toBe("101");
-        expect(rules.name(undefined)).toBe("");
+        expect(rules.artistId("1")).toBe("1");
+        expect(rules.artistId("  101 ")).toBe("101");
+        expect(rules.artistId(undefined)).toBe("");
+    });
+
+    test("id", () => {
+        expect(rules.id("1")).toBe("1");
+        expect(rules.id("  101 ")).toBe("101");
+        expect(rules.id(undefined)).toBe("");
     });
 
     test("isDefault", () => {
