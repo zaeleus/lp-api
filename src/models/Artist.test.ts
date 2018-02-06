@@ -1,18 +1,32 @@
+import { INormalizedArtistAttributes } from "../normalizers/artist";
 import PartialDate from "../PartialDate";
 import Artist, { ArtistKind } from "./Artist";
+
+const DEFAULT_ATTRIBUTES = {
+    country: "US",
+    disambiguation: undefined,
+    endedOn: new PartialDate(),
+    kind: ArtistKind.Person,
+    startedOn: PartialDate.parse("1990-08"),
+};
+
+export const createArtist = (
+    overrides: Partial<INormalizedArtistAttributes> = {},
+): Promise<Artist> => {
+    const attributes = {
+        ...DEFAULT_ATTRIBUTES,
+        ...overrides,
+    };
+
+    return Artist.create(attributes);
+};
 
 describe("Artist", () => {
     describe(".create", () => {
         test("creates a new artist record", async () => {
             expect.assertions(9);
 
-            const artist = await Artist.create({
-                country: "US",
-                disambiguation: undefined,
-                endedOn: new PartialDate(),
-                kind: ArtistKind.Person,
-                startedOn: PartialDate.parse("1990-08"),
-            });
+            const artist = await createArtist();
 
             expect(artist.country).toBe("US");
             expect(artist.disambiguation).toBeNull();
@@ -30,13 +44,7 @@ describe("Artist", () => {
         test("updates an existing artist record", async () => {
             expect.assertions(9);
 
-            let artist = await Artist.create({
-                country: "US",
-                disambiguation: undefined,
-                endedOn: new PartialDate(),
-                kind: ArtistKind.Person,
-                startedOn: PartialDate.parse("1990-08"),
-            });
+            let artist = await createArtist();
 
             artist = await artist.update({
                 country: "GB",
