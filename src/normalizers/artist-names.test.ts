@@ -19,12 +19,14 @@ describe("rules", () => {
 
         const expected: INormalizedArtistNameAttributes[] = [{
             artistId: "1",
+            id: "",
             isDefault: false,
             isOriginal: true,
             locale: "ko",
             name: "수지",
         }, {
             artistId: "1",
+            id: "",
             isDefault: true,
             isOriginal: false,
             locale: "en",
