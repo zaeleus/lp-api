@@ -2,14 +2,21 @@ import * as dotenv from "dotenv";
 import * as Knex from "knex";
 import { Model } from "objection";
 
-dotenv.config();
+let knex: Knex;
 
-const knex = Knex({
-    client: "pg",
-    connection: process.env.DATABASE_URL,
+beforeAll(() => {
+    dotenv.config();
+
+    knex = Knex({
+        client: "pg",
+        connection: process.env.DATABASE_URL,
+    });
+
+    Model.knex(knex);
 });
 
-Model.knex(knex);
-
-// TODO: move to a global teardown
-// afterAll(() => knex.destroy());
+afterAll(() => {
+    if (knex) {
+        knex.destroy();
+    }
+});
