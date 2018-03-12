@@ -9,7 +9,7 @@ beforeAll(() => {
 
     knex = Knex({
         client: "pg",
-        connection: process.env.DATABASE_URL,
+        connection: `${process.env.DATABASE_URL}_test`,
     });
 
     Model.knex(knex);
