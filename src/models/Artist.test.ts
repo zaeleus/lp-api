@@ -2,7 +2,7 @@ import * as knex from "knex";
 import { transaction, Transaction } from "objection";
 
 import { INormalizedArtistAttributes } from "../normalizers/artist";
-import PartialDate from "../PartialDate";
+import PartialDate from "../util/PartialDate";
 import Artist, { ArtistKind } from "./Artist";
 
 const DEFAULT_ATTRIBUTES = {

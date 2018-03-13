@@ -4,7 +4,7 @@ import ArtistName from "../../models/ArtistName";
 import ArtistUrl from "../../models/ArtistUrl";
 import Membership from "../../models/Membership";
 
-import PartialDate from "../../PartialDate";
+import PartialDate from "../../util/PartialDate";
 
 export const typeDefs = `
     enum ArtistKind {

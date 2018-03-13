@@ -1,5 +1,5 @@
 import { ArtistKind } from "../models/Artist";
-import PartialDate from "../PartialDate";
+import PartialDate from "../util/PartialDate";
 
 export interface IArtistAttributes {
     country: string;
