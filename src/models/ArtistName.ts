@@ -1,12 +1,16 @@
 import { LocalDate, ZoneOffset } from "js-joda";
-import { Model } from "objection";
+import * as knex from "knex";
+import { Model, Transaction } from "objection";
 
 import { INormalizedArtistNameAttributes } from "../normalizers/artist-name";
 
 class ArtistName extends Model {
     public static tableName = "artist_names";
 
-    public static create(attributes: INormalizedArtistNameAttributes): Promise<ArtistName> {
+    public static create(
+        attributes: INormalizedArtistNameAttributes,
+        trxOrKnex?: Transaction | knex,
+    ): Promise<ArtistName> {
         const now = LocalDate.now(ZoneOffset.UTC).toString();
 
         const values = {
@@ -20,7 +24,7 @@ class ArtistName extends Model {
             updated_at: now,
         };
 
-        return ArtistName.query().insertAndFetch(values);
+        return ArtistName.query(trxOrKnex).insertAndFetch(values);
     }
 
     public get isDefault(): boolean {
@@ -45,6 +49,7 @@ class ArtistName extends Model {
 
     public update(
         attributes: Partial<INormalizedArtistNameAttributes>,
+        trxOrKnex?: Transaction | knex,
     ): Promise<ArtistName> {
         let artistId;
 
@@ -64,7 +69,7 @@ class ArtistName extends Model {
             updated_at: now,
         };
 
-        return ArtistName.query().patchAndFetchById(this.id, values);
+        return ArtistName.query(trxOrKnex).patchAndFetchById(this.id, values);
     }
 }
 

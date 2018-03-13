@@ -1,5 +1,6 @@
 import { LocalDate, ZoneOffset } from "js-joda";
-import { Model } from "objection";
+import * as knex from "knex";
+import { Model, Transaction } from "objection";
 
 import { INormalizedArtistAttributes } from "../normalizers/artist";
 import Album from "./Album";
@@ -44,7 +45,10 @@ class Artist extends Model {
         },
     };
 
-    public static create(attributes: INormalizedArtistAttributes): Promise<Artist> {
+    public static create(
+        attributes: INormalizedArtistAttributes,
+        trxOrKnex?: Transaction | knex,
+    ): Promise<Artist> {
         const { startedOn, endedOn } = attributes;
         const now = LocalDate.now(ZoneOffset.UTC).toString();
 
@@ -65,7 +69,7 @@ class Artist extends Model {
             updated_at: now,
         };
 
-        return Artist.query().insertAndFetch(values);
+        return Artist.query(trxOrKnex).insertAndFetch(values);
     }
 
     public static search(query: string): Promise<Artist[]> {
@@ -115,7 +119,10 @@ class Artist extends Model {
             .orderByRaw(`(${releasedOn.toString()}) desc`);
     }
 
-    public update(attributes: Partial<INormalizedArtistAttributes>): Promise<Artist> {
+    public update(
+        attributes: Partial<INormalizedArtistAttributes>,
+        trxOrKnex?: Transaction | knex,
+    ): Promise<Artist> {
         const { startedOn, endedOn } = attributes;
 
         // tslint:disable:variable-name
@@ -158,7 +165,7 @@ class Artist extends Model {
             updated_at: now,
         };
 
-        return Artist.query().patchAndFetchById(this.id, values);
+        return Artist.query(trxOrKnex).patchAndFetchById(this.id, values);
     }
 }
 
