@@ -1,5 +1,8 @@
+import * as knex from "knex";
+import { transaction, Transaction } from "objection";
+
 import Artist, { ArtistKind } from "../../models/Artist";
-import { resolvers } from "./Mutation";
+import { createArtistAndArtistNames, resolvers } from "./Mutation";
 
 const DEFAULT_PAYLOAD = {
     input: {
@@ -27,12 +30,19 @@ describe("mutations Root resolvers", () => {
    describe("createArtist", () => {
         describe("with valid input", () => {
             let artist: Artist;
+            let trx: Transaction;
 
             beforeAll(async () => {
-                artist = await resolvers.Mutation.createArtist({}, DEFAULT_PAYLOAD);
+                trx = await transaction.start(Artist.knex());
+
+                artist = await createArtistAndArtistNames(DEFAULT_PAYLOAD.input, trx);
                 artist = await artist.$loadRelated("names(orderById)", {
                     orderById: (builder) => builder.orderBy("id"),
-                });
+                }, trx);
+            });
+
+            afterAll(async () => {
+                await trx.rollback();
             });
 
             test("creates a new artist", () => {
@@ -99,7 +109,7 @@ describe("mutations Root resolvers", () => {
 
                 const afterCounts: ICount[] = await Artist.query().count() as any[];
 
-                expect(afterCounts).toEqual(beforeCounts);
+                expect(afterCounts[0].count).toBe(beforeCounts[0].count);
             });
         });
     });
