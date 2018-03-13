@@ -1,3 +1,6 @@
+import * as knex from "knex";
+import { transaction, Transaction } from "objection";
+
 import Artist from "../../models/Artist";
 import ArtistName from "../../models/ArtistName";
 import normalizeArtist, {
@@ -73,37 +76,9 @@ export const typeDefs = `
 export const resolvers = {
     Mutation: {
         async createArtist(_root: any, { input }: { input: INewArtistInput }): Promise<Artist> {
-            const attributes = normalizeArtist(input);
-            validateArtist(attributes);
-
-            let artist;
-
-            try {
-                artist = await Artist.create(attributes);
-
-                const artistNamesAttributes = normalizeArtistNames(input.names);
-                validateArtistNames(artistNamesAttributes);
-
-                const artistId = artist.id.toString();
-
-                for (const name of artistNamesAttributes) {
-                    const artistNameAttributes = normalizeArtistName({
-                        artistId,
-                        isDefault: name.isDefault,
-                        isOriginal: name.isOriginal,
-                        locale: name.locale,
-                        name: name.name,
-                    });
-
-                    validateArtistName(artistNameAttributes);
-
-                    await ArtistName.create(artistNameAttributes);
-                }
-            } catch (err) {
-                throw new Error(err.message);
-            }
-
-            return artist;
+            return transaction(Artist.knex(), (trx) => (
+                createArtistAndArtistNames(input, trx)
+            ));
         },
 
         async patchArtist(_root: any, { input }: { input: IArtistInput }): Promise<Artist> {
@@ -149,4 +124,35 @@ export const resolvers = {
             }
         },
     },
+};
+
+export const createArtistAndArtistNames = async (
+    input: INewArtistInput,
+    trxOrKnex?: Transaction | knex,
+): Promise<Artist> => {
+    const attributes = normalizeArtist(input);
+    validateArtist(attributes);
+
+    const artist = await Artist.create(attributes, trxOrKnex);
+
+    const artistNamesAttributes = normalizeArtistNames(input.names);
+    validateArtistNames(artistNamesAttributes);
+
+    const artistId = artist.id.toString();
+
+    for (const name of artistNamesAttributes) {
+        const artistNameAttributes = normalizeArtistName({
+            artistId,
+            isDefault: name.isDefault,
+            isOriginal: name.isOriginal,
+            locale: name.locale,
+            name: name.name,
+        });
+
+        validateArtistName(artistNameAttributes);
+
+        await ArtistName.create(artistNameAttributes, trxOrKnex);
+    }
+
+    return artist;
 };

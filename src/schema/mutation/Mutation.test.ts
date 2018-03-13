@@ -83,6 +83,24 @@ describe("mutations Root resolvers", () => {
                 expect.assertions(1);
                 await expect(createArtist()).rejects.toThrow();
             });
+
+            test("rolls back the transaction", async () => {
+                interface ICount { count: number; }
+
+                expect.assertions(2);
+
+                const beforeCounts: ICount[] = await Artist.query().count() as any[];
+
+                const payload = { ...DEFAULT_PAYLOAD };
+                payload.input.names[1].locale = "";
+
+                const result = resolvers.Mutation.createArtist({}, payload);
+                await expect(result).rejects.toThrow();
+
+                const afterCounts: ICount[] = await Artist.query().count() as any[];
+
+                expect(afterCounts).toEqual(beforeCounts);
+            });
         });
     });
 });
