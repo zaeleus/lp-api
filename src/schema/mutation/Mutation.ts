@@ -6,7 +6,7 @@ import ArtistName from "../../models/ArtistName";
 import normalizeArtist, {
     normalizePartial as normalizePartialArtist,
 } from "../../normalizers/artist";
-import normalizeArtistName from "../../normalizers/artist-name";
+import { INormalizedArtistNameAttributes } from "../../normalizers/artist-name";
 import normalizeArtistNames from "../../normalizers/artist-names";
 import validateArtist from "../../validators/artist";
 import validateArtistName from "../../validators/artist-name";
@@ -94,28 +94,7 @@ export const resolvers = {
                 artist.update(attributes);
 
                 if (input.names) {
-                    const artistNamesAttributes = normalizeArtistNames(input.names);
-                    validateArtistNames(artistNamesAttributes);
-
-                    for (const name of artistNamesAttributes) {
-                        const artistNameAttributes = normalizeArtistName({
-                            artistId,
-                            isDefault: name.isDefault,
-                            isOriginal: name.isOriginal,
-                            locale: name.locale,
-                            name: name.name,
-                        });
-
-                        validateArtistName(artistNameAttributes);
-
-                        if (name.id.length > 0) {
-                            const artistName = await ArtistName.query().findById(name.id);
-                            if (!artistName) { throw new Error("artist name not found"); }
-                            await artistName.update(artistNameAttributes);
-                        } else {
-                            await ArtistName.create(artistNameAttributes);
-                        }
-                    }
+                    await createOrUpdateArtistNames(artistId, input.names);
                 }
 
                 return await artist.update(attributes);
@@ -132,27 +111,39 @@ export const createArtistAndArtistNames = async (
 ): Promise<Artist> => {
     const attributes = normalizeArtist(input);
     validateArtist(attributes);
-
     const artist = await Artist.create(attributes, trxOrKnex);
 
-    const artistNamesAttributes = normalizeArtistNames(input.names);
-    validateArtistNames(artistNamesAttributes);
-
     const artistId = artist.id.toString();
-
-    for (const name of artistNamesAttributes) {
-        const artistNameAttributes = normalizeArtistName({
-            artistId,
-            isDefault: name.isDefault,
-            isOriginal: name.isOriginal,
-            locale: name.locale,
-            name: name.name,
-        });
-
-        validateArtistName(artistNameAttributes);
-
-        await ArtistName.create(artistNameAttributes, trxOrKnex);
-    }
+    await createOrUpdateArtistNames(artistId, input.names, trxOrKnex);
 
     return artist;
+};
+
+const createOrUpdateArtistNames = async (
+    artistId: string,
+    input: IArtistNameInput[],
+    trxOrKnex?: Transaction | knex,
+) => {
+    const attributes = normalizeArtistNames(input);
+    validateArtistNames(attributes);
+
+    for (const attrs of attributes) {
+        attrs.artistId = artistId;
+        await createOrUpdateArtistName(attrs, trxOrKnex);
+    }
+};
+
+const createOrUpdateArtistName = async (
+    attributes: INormalizedArtistNameAttributes,
+    trxOrKnex?: Transaction | knex,
+): Promise<ArtistName> => {
+    validateArtistName(attributes);
+
+    if (attributes.id.length > 0) {
+        const name = await ArtistName.query(trxOrKnex).findById(attributes.id);
+        if (!name) { throw new Error("artist name not found"); }
+        return name.update(attributes, trxOrKnex);
+    } else {
+        return ArtistName.create(attributes, trxOrKnex);
+    }
 };
