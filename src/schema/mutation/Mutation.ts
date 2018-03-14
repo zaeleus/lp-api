@@ -82,24 +82,9 @@ export const resolvers = {
         },
 
         async patchArtist(_root: any, { input }: { input: IArtistInput }): Promise<Artist> {
-            try {
-                const artistId = input.id;
-                let artist = await Artist.query().findById(artistId);
-
-                if (!artist) { throw new Error("artist not found"); }
-
-                const attributes = normalizePartialArtist(input);
-                validateArtist(attributes);
-                artist = await artist.update(attributes);
-
-                if (input.names) {
-                    await createOrUpdateArtistNames(artistId, input.names);
-                }
-
-                return artist;
-            } catch (err) {
-                throw new Error(err.message);
-            }
+            return transaction(Artist.knex(), (trx) => (
+                patchArtistAndArtistNames(input, trx)
+            ));
         },
     },
 };
@@ -114,6 +99,28 @@ export const createArtistAndArtistNames = async (
 
     const artistId = artist.id.toString();
     await createOrUpdateArtistNames(artistId, input.names, trxOrKnex);
+
+    return artist;
+};
+
+export const patchArtistAndArtistNames = async (
+    input: IArtistInput,
+    trxOrKnex?: Transaction | knex,
+): Promise<Artist> => {
+    const artistId = input.id;
+    let artist = await Artist.query(trxOrKnex).findById(artistId);
+
+    if (!artist) {
+        throw new Error(`artist not found (id = ${artistId})`);
+    }
+
+    const attributes = normalizePartialArtist(input);
+    validateArtist(attributes);
+    artist = await artist.update(attributes, trxOrKnex);
+
+    if (input.names) {
+        await createOrUpdateArtistNames(artistId, input.names, trxOrKnex);
+    }
 
     return artist;
 };
