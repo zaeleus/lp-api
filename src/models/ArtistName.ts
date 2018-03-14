@@ -1,5 +1,5 @@
 import { LocalDate, ZoneOffset } from "js-joda";
-import * as knex from "knex";
+import knex from "knex";
 import { Model, Transaction } from "objection";
 
 import { INormalizedArtistNameAttributes } from "../normalizers/artist-name";

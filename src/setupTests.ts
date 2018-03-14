@@ -1,22 +1,22 @@
-import * as dotenv from "dotenv";
-import * as Knex from "knex";
+import dotenv from "dotenv";
+import knex from "knex";
 import { Model } from "objection";
 
-let knex: Knex;
+let knx: knex;
 
 beforeAll(() => {
     dotenv.config();
 
-    knex = Knex({
+    knx = knex({
         client: "pg",
         connection: `${process.env.DATABASE_URL}_test`,
     });
 
-    Model.knex(knex);
+    Model.knex(knx);
 });
 
 afterAll(() => {
-    if (knex) {
-        knex.destroy();
+    if (knx) {
+        knx.destroy();
     }
 });

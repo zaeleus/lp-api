@@ -1,9 +1,9 @@
 import { ExpressGraphQLOptionsFunction, graphqlExpress } from "apollo-server-express";
-import * as bodyParser from "body-parser";
-import * as dotenv from "dotenv";
-import * as express from "express";
-import * as Knex from "knex";
-import * as morgan from "morgan";
+import bodyParser from "body-parser";
+import dotenv from "dotenv";
+import express from "express";
+import knex from "knex";
+import morgan from "morgan";
 import { Model } from "objection";
 
 import schema from "./schema";
@@ -12,12 +12,12 @@ dotenv.config();
 
 const PORT = process.env.PORT || 3000;
 
-const knex = Knex({
+const knx = knex({
     client: "pg",
     connection: process.env.DATABASE_URL,
 });
 
-Model.knex(knex);
+Model.knex(knx);
 
 const graphqlOptions: ExpressGraphQLOptionsFunction = (request) => ({
     context: { request, knex },

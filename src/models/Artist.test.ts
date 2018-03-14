@@ -1,4 +1,4 @@
-import * as knex from "knex";
+import knex from "knex";
 import { transaction, Transaction } from "objection";
 
 import { INormalizedArtistAttributes } from "../normalizers/artist";
