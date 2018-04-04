@@ -11,6 +11,7 @@ export const typeDefs = `
     }
 
     type Contribution {
+        id: ID!
         artistCredit: ArtistCredit!
         song: Song!
         kind: ContributionKind!
