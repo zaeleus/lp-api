@@ -3,6 +3,7 @@ import knex from "knex";
 import { Model, Transaction } from "objection";
 
 import { INormalizedArtistAttributes } from "../normalizers/artist";
+import PartialDate from "../util/PartialDate";
 import Album from "./Album";
 import ArtistName from "./ArtistName";
 import ArtistUrl from "./ArtistUrl";
@@ -117,6 +118,22 @@ class Artist extends Model {
             .where("artist_credit_names.artist_id", this.id)
             .groupBy("albums.id")
             .orderByRaw(`(${releasedOn.toString()}) desc`);
+    }
+
+    public endedOn(): PartialDate {
+        return new PartialDate(
+            this.ended_on_year || undefined,
+            this.ended_on_month || undefined,
+            this.ended_on_day || undefined,
+        );
+    }
+
+    public startedOn(): PartialDate {
+        return new PartialDate(
+            this.started_on_year || undefined,
+            this.started_on_month || undefined,
+            this.started_on_day || undefined,
+        );
     }
 
     public update(

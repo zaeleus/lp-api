@@ -4,8 +4,6 @@ import ArtistName from "../../models/ArtistName";
 import ArtistUrl from "../../models/ArtistUrl";
 import Membership from "../../models/Membership";
 
-import PartialDate from "../../util/PartialDate";
-
 export const typeDefs = `
     enum ArtistKind {
         PERSON
@@ -39,12 +37,7 @@ export const resolvers = {
         },
 
         endedOn(artist: Artist): string | null {
-            const date = new PartialDate(
-                artist.ended_on_year,
-                artist.ended_on_month,
-                artist.ended_on_day,
-            ).toString();
-
+            const date = artist.endedOn().toString();
             return (date !== "") ? date : null;
         },
 
@@ -88,12 +81,7 @@ export const resolvers = {
         },
 
         startedOn(artist: Artist): string | null {
-            const date = new PartialDate(
-                artist.started_on_year,
-                artist.started_on_month,
-                artist.started_on_day,
-            ).toString();
-
+            const date = artist.startedOn().toString();
             return (date !== "") ? date : null;
         },
 
