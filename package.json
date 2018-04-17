@@ -5,7 +5,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "start": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts",
+    "start": "nodemon",
     "build": "tsc",
     "lint": "tslint --project .; test $? -eq 0 -o $? -eq 2",
     "test": "jest"
