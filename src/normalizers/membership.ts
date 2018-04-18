@@ -7,7 +7,7 @@ interface IMembershipAttributes {
     startedOn: string;
 }
 
-interface INormalizedMembershipAttributes {
+export interface INormalizedMembershipAttributes {
     artistId: string;
     endedOn: PartialDate;
     id: string;
