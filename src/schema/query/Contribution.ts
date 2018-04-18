@@ -21,17 +21,13 @@ export const typeDefs = `
 export const resolvers = {
     Contribution: {
         async artistCredit(contribution: Contribution): Promise<ArtistCredit> {
-            try {
-                const c = await contribution.$loadRelated("artistCredit");
+            const c = await contribution.$loadRelated("artistCredit");
 
-                if (!c.artistCredit) {
-                    throw new Error("failed to load contribution.artistCredit");
-                }
-
-                return c.artistCredit;
-            } catch (err) {
-                throw new Error(err.message);
+            if (!c.artistCredit) {
+                throw new Error("failed to load contribution.artistCredit");
             }
+
+            return c.artistCredit;
         },
 
         kind(contribution: Contribution): string {
@@ -45,17 +41,13 @@ export const resolvers = {
         },
 
         async song(contribution: Contribution): Promise<Song> {
-            try {
-                const c = await contribution.$loadRelated("song");
+            const c = await contribution.$loadRelated("song");
 
-                if (!c.song) {
-                    throw new Error("failed to load contribution.song");
-                }
-
-                return c.song;
-            } catch (err) {
-                throw new Error(err.message);
+            if (!c.song) {
+                throw new Error("failed to load contribution.song");
             }
+
+            return c.song;
         },
     },
 };

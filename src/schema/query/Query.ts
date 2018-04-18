@@ -22,99 +22,68 @@ export const typeDefs = `
 
 export const resolvers = {
     Query: {
-        async albums(_root: any, { query }: { query: string }): Promise<Album[]> {
-            try {
-                return await Album.search(query);
-            } catch (err) {
-                throw new Error(err.message);
-            }
+        albums(_root: any, { query }: { query: string }): Promise<Album[]> {
+            return Album.search(query);
         },
 
-        async albumsByReleaseMonth(_root: any, { date }: { date: string }): Promise<Album[]> {
+        albumsByReleaseMonth(_root: any, { date }: { date: string }): Promise<Album[]> {
             const parsedDate = YearMonth.parse(date);
             const start = parsedDate.atDay(1).toString();
             const end = parsedDate.atEndOfMonth().toString();
 
-            try {
-                return await Album.query()
-                    .select("albums.*")
-                    .innerJoin("releases", "albums.id", "releases.album_id")
-                    .whereBetween("releases.released_on", [start, end])
-                    .orderBy("releases.released_on");
-            } catch (err) {
-                throw new Error(err.message);
-            }
+            return Album.query()
+                .select("albums.*")
+                .innerJoin("releases", "albums.id", "releases.album_id")
+                .whereBetween("releases.released_on", [start, end])
+                .orderBy("releases.released_on");
         },
 
         async artist(_root: any, { id }: { id: string }): Promise<Artist | null> {
-            try {
-                const artist = await Artist.query().findById(id);
-                return artist || null;
-            } catch (err) {
-                throw new Error(err.message);
-            }
+            const artist = await Artist.query().findById(id);
+            return artist || null;
         },
 
-        async artists(_root: any, { query, limit }: { query: string, limit: number }): Promise<Artist[]> {
-            try {
-                let builder = Artist.search(query) as QueryBuilder<Artist>;
+        artists(_root: any, { query, limit }: { query: string, limit: number }): Promise<Artist[]> {
+            let builder = Artist.search(query) as QueryBuilder<Artist>;
 
-                if (limit) {
-                    builder = builder.limit(limit);
-                }
-
-                return await builder;
-            } catch (err) {
-                throw new Error(err.message);
+            if (limit) {
+                builder = builder.limit(limit);
             }
+
+            return builder;
         },
 
-        async artistsByStartMonth(_root: any, { date }: { date: string }): Promise<Artist[]> {
+        artistsByStartMonth(_root: any, { date }: { date: string }): Promise<Artist[]> {
             const parsedDate = YearMonth.parse(date);
             const month = parsedDate.month().value();
 
-            try {
-                return await Artist.query()
-                    .where("started_on_month", "=", month)
-                    .where("kind", "=", ArtistKind.Person)
-                    .orderBy("started_on_day");
-            } catch (err) {
-                throw new Error(err.message);
-            }
+            return Artist.query()
+                .where("started_on_month", "=", month)
+                .where("kind", "=", ArtistKind.Person)
+                .orderBy("started_on_day");
         },
 
-        async recentAlbums(_root: any, { first }: { first: number }): Promise<Album[]> {
-            try {
-                return await Album.query()
-                    .select("albums.*")
-                    .innerJoin("releases", "albums.id", "releases.album_id")
-                    .orderBy("releases.released_on", "desc")
-                    .groupBy("albums.id", "releases.released_on")
-                    .limit(first);
-            } catch (err) {
-                throw new Error(err.message);
-            }
+        recentAlbums(_root: any, { first }: { first: number }): Promise<Album[]> {
+            return Album.query()
+                .select("albums.*")
+                .innerJoin("releases", "albums.id", "releases.album_id")
+                .orderBy("releases.released_on", "desc")
+                .groupBy("albums.id", "releases.released_on")
+                .limit(first);
         },
 
         async release(_root: any, { id }: { id: string }): Promise<Release | null> {
-            try {
-                const release = await Release.query().findById(id);
-                return release || null;
-            } catch (err) {
-                throw new Error(err.message);
-            }
+            const release = await Release.query().findById(id);
+            return release || null;
         },
 
-        async song(_root: any, { id }: { id: string }): Promise<Song | undefined> {
-            return Song.query().findById(id);
+        async song(_root: any, { id }: { id: string }): Promise<Song | null> {
+            const song = await Song.query().findById(id);
+            return song || null;
         },
 
-        async songs(_root: any, { query }: { query: string }): Promise<Song[]> {
-            try {
-                return await Song.search(query);
-            } catch (err) {
-                throw new Error(err.message);
-            }
+        songs(_root: any, { query }: { query: string }): Promise<Song[]> {
+            return Song.search(query);
         },
     },
 };

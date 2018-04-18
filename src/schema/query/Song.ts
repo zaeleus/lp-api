@@ -28,44 +28,28 @@ export const resolvers = {
         },
 
         async artistCredit(song: Song): Promise<ArtistCredit> {
-            try {
-                const s = await song.$loadRelated("artistCredit");
+            const s = await song.$loadRelated("artistCredit");
 
-                if (!s.artistCredit) {
-                    throw new Error("failed to load song.artistCredit");
-                }
-
-                return s.artistCredit;
-            } catch (err) {
-                throw new Error(err.message);
+            if (!s.artistCredit) {
+                throw new Error("failed to load song.artistCredit");
             }
+
+            return s.artistCredit;
         },
 
         async contributions(song: Song): Promise<Contribution[]> {
-            try {
-                const s = await song.$loadRelated("contributions");
-                return s.contributions || [];
-            } catch (err) {
-                throw new Error(err.message);
-            }
+            const s = await song.$loadRelated("contributions");
+            return s.contributions || [];
         },
 
         async names(song: Song): Promise<SongName[]> {
-            try {
-                const s = await song.$loadRelated("names");
-                return s.names || [];
-            } catch (err) {
-                throw new Error(err.message);
-            }
+            const s = await song.$loadRelated("names");
+            return s.names || [];
         },
 
         async urls(song: Song): Promise<SongUrl[]> {
-            try {
-                const s = await song.$loadRelated("urls");
-                return s.urls || [];
-            } catch (err) {
-                throw new Error(err.message);
-            }
+            const s = await song.$loadRelated("urls");
+            return s.urls || [];
         },
     },
 };

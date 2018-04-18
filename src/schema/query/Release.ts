@@ -28,17 +28,13 @@ export const typeDefs = `
 export const resolvers = {
     Release: {
         async album(release: Release): Promise<Album> {
-            try {
-                const r = await release.$loadRelated("album");
+            const r = await release.$loadRelated("album");
 
-                if (!r.album) {
-                    throw new Error("failed to load release.album");
-                }
-
-                return r.album;
-            } catch (err) {
-                throw new Error(err.message);
+            if (!r.album) {
+                throw new Error("failed to load release.album");
             }
+
+            return r.album;
         },
 
         artworkUrls(release: Release): any {
@@ -55,36 +51,24 @@ export const resolvers = {
         },
 
         async media(release: Release): Promise<Medium[]> {
-            try {
-                const r = await release.$loadRelated("media(orderByPosition)", {
-                    orderByPosition: (builder) => builder.orderBy("media.position"),
-                });
+            const r = await release.$loadRelated("media(orderByPosition)", {
+                orderByPosition: (builder) => builder.orderBy("media.position"),
+            });
 
-                return r.media || [];
-            } catch (err) {
-                throw new Error(err.message);
-            }
+            return r.media || [];
         },
 
         releasedOn(release: Release): string {
             return LocalDate.from(nativeJs(release.releasedOn)).toString();
         },
 
-        async siblings(release: Release): Promise<Release[]> {
-            try {
-                return await release.siblings();
-            } catch (err) {
-                throw new Error(err.message);
-            }
+        siblings(release: Release): Promise<Release[]> {
+            return release.siblings();
         },
 
         async urls(release: Release): Promise<ReleaseUrl[]> {
-            try {
-                const r = await release.$loadRelated("urls");
-                return r.urls || [];
-            } catch (err) {
-                throw new Error(err.message);
-            }
+            const r = await release.$loadRelated("urls");
+            return r.urls || [];
         },
     },
 };

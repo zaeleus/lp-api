@@ -75,13 +75,13 @@ export const typeDefs = `
 
 export const resolvers = {
     Mutation: {
-        async createArtist(_root: any, { input }: { input: INewArtistInput }): Promise<Artist> {
+        createArtist(_root: any, { input }: { input: INewArtistInput }): Promise<Artist> {
             return transaction(Artist.knex(), (trx) => (
                 createArtistAndArtistNames(input, trx)
             ));
         },
 
-        async patchArtist(_root: any, { input }: { input: IArtistInput }): Promise<Artist> {
+        patchArtist(_root: any, { input }: { input: IArtistInput }): Promise<Artist> {
             return transaction(Artist.knex(), (trx) => (
                 patchArtistAndArtistNames(input, trx)
             ));

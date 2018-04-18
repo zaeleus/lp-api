@@ -28,12 +28,8 @@ export const typeDefs = `
 export const resolvers = {
     Artist: {
         async albums(artist: Artist): Promise<Album[]> {
-            try {
-                const albums = await artist.albums();
-                return albums || [];
-            } catch (err) {
-                throw new Error(err.message);
-            }
+            const albums = await artist.albums();
+            return albums || [];
         },
 
         endedOn(artist: Artist): string | null {
@@ -41,17 +37,13 @@ export const resolvers = {
             return (date !== "") ? date : null;
         },
 
-        async groupships(artist: Artist): Promise<Membership[]> {
-            try {
-                return await Membership.query()
-                    .select("memberships.*")
-                    .innerJoin("artist_credits", "memberships.artist_credit_id", "artist_credits.id")
-                    .innerJoin("artist_credit_names", "artist_credits.id", "artist_credit_names.artist_credit_id")
-                    .where("artist_credit_names.artist_id", artist.id)
-                    .groupBy("memberships.id");
-            } catch (err) {
-                throw new Error(err.message);
-            }
+        groupships(artist: Artist): Promise<Membership[]> {
+            return Membership.query()
+                .select("memberships.*")
+                .innerJoin("artist_credits", "memberships.artist_credit_id", "artist_credits.id")
+                .innerJoin("artist_credit_names", "artist_credits.id", "artist_credit_names.artist_credit_id")
+                .where("artist_credit_names.artist_id", artist.id)
+                .groupBy("memberships.id");
         },
 
         kind(artist: Artist): string {
@@ -63,21 +55,13 @@ export const resolvers = {
         },
 
         async memberships(artist: Artist): Promise<Membership[]> {
-            try {
-                const a = await artist.$loadRelated("memberships");
-                return a.memberships || [];
-            } catch (err) {
-                throw new Error(err.message);
-            }
+            const a = await artist.$loadRelated("memberships");
+            return a.memberships || [];
         },
 
         async names(artist: Artist): Promise<ArtistName[]> {
-            try {
-                const a = await artist.$loadRelated("names");
-                return a.names || [];
-            } catch (err) {
-                throw new Error(err.message);
-            }
+            const a = await artist.$loadRelated("names");
+            return a.names || [];
         },
 
         startedOn(artist: Artist): string | null {
@@ -86,12 +70,8 @@ export const resolvers = {
         },
 
         async urls(artist: Artist): Promise<ArtistUrl[]> {
-            try {
-                const a = await artist.$loadRelated("urls");
-                return a.urls || [];
-            } catch (err) {
-                throw new Error(err.message);
-            }
+            const a = await artist.$loadRelated("urls");
+            return a.urls || [];
         },
     },
 };

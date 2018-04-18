@@ -33,12 +33,8 @@ export const resolvers = {
         },
 
         async tracks(medium: Medium): Promise<Track[]> {
-            try {
-                const m = await medium.$loadRelated("tracks");
-                return m.tracks || [];
-            } catch (err) {
-                throw new Error(err.message);
-            }
+            const m = await medium.$loadRelated("tracks");
+            return m.tracks || [];
         },
     },
 };

@@ -23,17 +23,13 @@ export const typeDefs = `
 export const resolvers = {
     Album: {
         async artistCredit(album: Album): Promise<ArtistCredit> {
-            try {
-                const a = await album.$loadRelated("artistCredit");
+            const a = await album.$loadRelated("artistCredit");
 
-                if (!a.artistCredit) {
-                    throw new Error("failed to load album.artistCredit");
-                }
-
-                return a.artistCredit;
-            } catch (err) {
-                throw new Error(err.message);
+            if (!a.artistCredit) {
+                throw new Error("failed to load album.artistCredit");
             }
+
+            return a.artistCredit;
         },
 
         kind(album: Album): string {
@@ -46,35 +42,23 @@ export const resolvers = {
         },
 
         async names(album: Album): Promise<AlbumName[]> {
-            try {
-                const a = await album.$loadRelated("names");
-                return a.names || [];
-            } catch (err) {
-                throw new Error(err.message);
-            }
+            const a = await album.$loadRelated("names");
+            return a.names || [];
         },
 
         async releases(album: Album): Promise<Release[]> {
-            try {
-                const a = await album.$loadRelated("releases");
-                return a.releases || [];
-            } catch (err) {
-                throw new Error(err.message);
-            }
+            const a = await album.$loadRelated("releases");
+            return a.releases || [];
         },
 
         async defaultRelease(album: Album): Promise<Release> {
-            try {
-                const a = await album.$loadRelated("releases");
+            const a = await album.$loadRelated("releases");
 
-                if (!a.releases) {
-                    throw new Error("missing default release");
-                }
-
-                return a.releases[0];
-            } catch (err) {
-                throw new Error(err.message);
+            if (!a.releases) {
+                throw new Error("missing default release");
             }
+
+            return a.releases[0];
         },
     },
 };

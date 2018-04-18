@@ -17,17 +17,13 @@ export const typeDefs = `
 export const resolvers = {
     ArtistCreditName: {
         async artist(name: ArtistCreditName): Promise<Artist> {
-            try {
-                const n = await name.$loadRelated("artist");
+            const n = await name.$loadRelated("artist");
 
-                if (!n.artist) {
-                    throw new Error("failed to load membership.artist");
-                }
-
-                return n.artist;
-            } catch (err) {
-                throw new Error(err.message);
+            if (!n.artist) {
+                throw new Error("failed to load membership.artist");
             }
+
+            return n.artist;
         },
     },
 };
